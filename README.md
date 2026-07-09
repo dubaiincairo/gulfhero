@@ -26,6 +26,7 @@ This project is built with **AI vibe coding**: every feature is implemented step
 | [`docs/08-vibe-coding-playbook.md`](docs/08-vibe-coding-playbook.md) | How to run AI coding sessions on this repo: workflow, prompting patterns, guardrails |
 | [`docs/09-screen-specs.md`](docs/09-screen-specs.md) | Every page/screen in detail: routes, layout, components, actions, states, navigation map |
 | [`docs/10-technical-execution-plan.md`](docs/10-technical-execution-plan.md) | Exact engineering steps per roadmap item: migrations, files, functions, tests |
+| [`docs/11-ezee-absolute-page-map.md`](docs/11-ezee-absolute-page-map.md) | Screen-by-screen map of eZee Absolute (from its official manuals) → GulfHero parity reference |
 
 ## Current status
 

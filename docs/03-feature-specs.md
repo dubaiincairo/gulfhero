@@ -131,3 +131,30 @@ Invariant: `folio.balance = sum(charges) + sum(taxes) − sum(payments/credits)`
 ## M15. Multi-property (Phase 5)
 
 - Organization layer above properties; cross-property dashboard (Layla with 3 hotels); shared guest profiles (opt-in); per-property everything else. `property_id` discipline from Phase 0 makes this an unlock, not a rewrite.
+
+---
+
+## Parity additions (from the eZee Absolute page map, `docs/11`)
+
+GulfHero targets **functional parity with eZee Absolute**: every screen and operation in `docs/11-ezee-absolute-page-map.md` must have a GulfHero home. The following requirements were surfaced from eZee's official manuals and are folded into the modules above (module refs in parentheses). Build them in the same roadmap step as their parent module unless noted.
+
+1. **Day Use reservations** (M3, M6): same-day arrival/departure status with its own tape-chart color, auto-posted charge as % of room rate after a configurable grace period, own revenue category in `daily_stats`.
+2. **Sharers** (M3, M6): additional occupants on a room stay; per-sharer registration cards; optional separate folio per sharer.
+3. **Inclusions** (M6): recurring extra charges attached to a stay (e.g., breakfast for 2 daily) with posting rule + charge rule; posted by night audit.
+4. **Expense vouchers & Cashiering Center** (M6): petty-cash payouts to guest/owner/agent/vendor with charges+payments blocks that must balance; payout-category catalog; receive payments against travel-agent and city-ledger balances. Surfaced as an Expenses tab in S11.
+5. **Travel-agent commission plans** (M5, M9): % of nights / fixed per night / fixed per stay; commission accrues per booking; detail/summary reports; payout via expense voucher.
+6. **Reservation actions** (M3): `void` (mistake-erasure, distinct from cancel — no fee, flagged in audit reports), un-assign room, re-send reservation voucher email.
+7. **Late-checkout auto-charge** (M6): grace hours + % of rate, like day use.
+8. **Tax engine details** (M1, M6): slab taxes, exempt-after-N-nights, apply before/after discount, per-charge tax exemption recording an exempt ID.
+9. **Configurable mandatory fields** (M1, M3): per-property matrix of required fields, separately for reservation vs walk-in.
+10. **Property-editable catalogs** (M1): reasons (per action), market codes, business sources, VIP statuses, preference types, blacklist reasons, transportation modes, identity types, bed types.
+11. **Document numbering & notices** (M1, M6): per-document-type sequences with prefix and daily/monthly/yearly reset; per-document footer texts (folio, GR card, receipt, voucher, T&C…).
+12. **KPI formula settings** (M8, M9): which revenue kinds count as room revenue; whether OOO rooms count in the occupancy denominator.
+13. **Multi-currency display** (M6): secondary currencies with manual exchange rates, refreshed at night audit; folios/invoices printable in a second currency.
+14. **Overbooking house toggle** (M2): default off; enabling allows type-level oversell that the allocator records as a flagged overbooking (never a silent one).
+15. **Housekeeping extras** (M7): common-area units (lobby, gym…) as cleanable non-room targets; property-defined HK status labels.
+16. **Availability & Rate Chart** (M4): month-grid quick view (availability + price per day for a room type × rate plan × pax) reachable from ⌘K — the phone-inquiry screen.
+17. **Edit-presence indicator** (M3): "Rania is viewing this reservation" presence + conflict-safe saves (our answer to eZee's Net Locks).
+18. **Room detail fields** (M1): bed type, phone extension, key-card alias, smoking flag, connecting-room links.
+19. **Report catalog parity** (M9): every report in doc 11 §A8 maps to a canned report, dashboard card, or saved NL question — maintain the mapping table in the reports module as it's built.
+20. **Deferred** (backlog, not v1): room-owner/condo module, per-property status color overrides, login IP allowlist.
