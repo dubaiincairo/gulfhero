@@ -39,7 +39,7 @@ GulfHero is an AI-native hotel Property Management System (PMS) inspired by eZee
 
 ## Working style
 
-- Before building a feature, read its spec section in `docs/03-feature-specs.md` (and `docs/07-ai-features.md` for AI features).
+- Before building a feature, read: its roadmap step in `docs/06-build-roadmap.md`, the same step number in `docs/10-technical-execution-plan.md` (exact migrations/files/tests — follow the reserved migration numbering), the screen spec in `docs/09-screen-specs.md`, and the module spec in `docs/03-feature-specs.md` (`docs/07-ai-features.md` for AI features).
 - After completing a roadmap step, tick its checkbox in `docs/06-build-roadmap.md` in the same commit.
 - Run `npm run lint && npm run typecheck && npm test` before committing; fix what you broke.
 - Prefer small, complete vertical slices (DB → server action → UI → test) over broad scaffolding.

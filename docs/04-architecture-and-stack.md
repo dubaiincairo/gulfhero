@@ -25,6 +25,45 @@
 
 Monorepo not needed: **one Next.js app** serves the staff dashboard (`app/(dashboard)`), the public booking engine (`app/book/[slug]`), and the guest portal (`app/stay/[token]`). Split later only if scale demands.
 
+## System diagram
+
+```mermaid
+flowchart TB
+  subgraph Clients
+    FD[Front-desk PC / phone<br/>staff PWA]
+    GD[Guest device]
+  end
+  subgraph Vercel["Vercel — one Next.js app"]
+    DASH["app/(dashboard)<br/>staff screens + Server Actions"]
+    BOOK["app/book/[slug]<br/>public booking engine"]
+    PORTAL["app/stay/[token]<br/>guest portal"]
+    API["app/api<br/>webhooks + cron routes"]
+    LIB["lib/: state machine · availability ·<br/>money · policies · ai gateway"]
+  end
+  subgraph Supabase
+    PG[(PostgreSQL<br/>RLS + allocate_room() + domain_events)]
+    AUTH[Auth]
+    RT[Realtime]
+    ST[Storage: room photos,<br/>guest docs private]
+  end
+  subgraph External
+    CLAUDE[Anthropic Claude API]
+    STRIPE[Stripe]
+    RESEND[Resend email]
+    TWILIO[Twilio WhatsApp]
+    OTA[iCal feeds / channel partner]
+  end
+  FD --> DASH
+  GD --> BOOK & PORTAL
+  DASH & BOOK & PORTAL --> LIB --> PG
+  DASH <-.live updates.-> RT --- PG
+  DASH & PORTAL --> ST
+  DASH --> AUTH
+  LIB --> CLAUDE
+  API <--> STRIPE & RESEND & TWILIO & OTA
+  API --> LIB
+```
+
 ## Architecture principles
 
 1. **The database is the source of truth and the last line of defense.**

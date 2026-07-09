@@ -3,6 +3,8 @@
 > The build is a sequence of **small vertical slices**, each completable in one focused AI coding session (roughly 1–3 hours of collaboration). Each step has: goal, acceptance criteria (AC), and a **ready-to-paste prompt** for Claude. Do them in order — later steps assume earlier ones. Tick the checkbox when the AC pass, in the same commit as the work.
 >
 > Session ritual: start by telling Claude to read `CLAUDE.md` + the step; end with lint/typecheck/tests green, seed data updated if needed, checkbox ticked, committed and pushed. Full workflow guidance: `docs/08-vibe-coding-playbook.md`.
+>
+> Companions per step: **exact migrations/files/functions/tests** → `docs/10-technical-execution-plan.md` (same step numbers) · **pixel-level page behavior** → `docs/09-screen-specs.md` (S-numbers) · feature behavior → `docs/03` · AI details → `docs/07`.
 
 ---
 
