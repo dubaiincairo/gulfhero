@@ -39,8 +39,8 @@ GulfHero is an AI-native hotel Property Management System (PMS) inspired by eZee
 
 ## Working style
 
-- Before building a feature, read: its roadmap step in `docs/06-build-roadmap.md`, the same step number in `docs/10-technical-execution-plan.md` (exact migrations/files/tests — follow the reserved migration numbering), the screen spec in `docs/09-screen-specs.md`, and the module spec in `docs/03-feature-specs.md` (`docs/07-ai-features.md` for AI features).
-- **eZee Absolute parity is a baseline requirement.** `docs/11-ezee-absolute-page-map.md` maps every eZee screen/operation to its GulfHero home; when building a module, check its section there (plus the Parity additions list in docs/03) so no capability is missed. Parity = same pages, workflows, and capabilities — never a visual clone of eZee's design or copy.
+- Before building a feature, read: its roadmap step in `docs/06-build-roadmap.md`, the same step number in `docs/10-technical-execution-plan.md` (exact migrations/files/tests — follow the reserved migration numbering), the screen spec in `docs/09-screen-specs.md`, the module spec in `docs/03-feature-specs.md`, and the live PMS evidence in `docs/12-pms-sitemap-research.md` plus `docs/13-pms-screenshot-sitemap-crosswalk.md` (`docs/07-ai-features.md` for AI features).
+- **eZee Absolute parity is a baseline requirement.** `docs/11-ezee-absolute-page-map.md` maps every eZee screen/operation to its GulfHero home; `docs/12-pms-sitemap-research.md` confirms the live route/tab/control/table/form inventory; `docs/13-pms-screenshot-sitemap-crosswalk.md` ties that sitemap to the Google Drive screenshot layouts. When building a module, check all three sources so no capability or desktop layout pattern is missed. Parity = same pages, workflows, and capabilities — never a visual clone of eZee's design or copy.
 - After completing a roadmap step, tick its checkbox in `docs/06-build-roadmap.md` in the same commit.
 - Run `npm run lint && npm run typecheck && npm test` before committing; fix what you broke.
 - Prefer small, complete vertical slices (DB → server action → UI → test) over broad scaffolding.
