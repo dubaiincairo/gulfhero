@@ -9,7 +9,7 @@ GulfHero is an AI-native hotel Property Management System (PMS) inspired by eZee
 ## Tech stack (fixed — do not substitute without asking)
 
 - **Framework:** Next.js (App Router) + TypeScript, single app in `app/`
-- **Styling/UI:** Tailwind CSS + shadcn/ui components; icons from lucide-react
+- **Styling/UI:** Ant Design React (`antd`) as the official PMS UI kit, themed through `ConfigProvider` using `docs/14-pms-design-system.md`; use custom CSS only for PMS-specific dense grids/boards. Icons may use Ant Design Icons or lucide-react when the metaphor matches the screenshots.
 - **Database:** PostgreSQL on Supabase; schema managed with SQL migrations in `supabase/migrations/`
 - **Auth:** Supabase Auth (email/password + invite flow); roles enforced with RLS + server-side checks
 - **Data access:** Server Components / Server Actions using the Supabase server client; generated DB types in `lib/database.types.ts`
@@ -34,13 +34,13 @@ GulfHero is an AI-native hotel Property Management System (PMS) inspired by eZee
 - The front-desk tape chart is the home screen. Common actions (check-in, check-out, new booking, assign room) must be reachable in ≤ 2 clicks from it.
 - Every list screen needs: search, empty state, loading skeleton, and keyboard navigation.
 - Destructive actions (cancel reservation, void charge) always confirm and always write to `audit_log`.
-- All screens must work at 1280px (front-desk PC) and 390px (phone) widths.
+- Current scope is desktop/laptop only. All screens must work at 1280px and wider front-desk/admin workstations. Do not spend implementation time on phone/mobile layouts until the user explicitly starts the mobile phase.
 - Support English and Arabic (RTL). Use the i18n dictionary in `lib/i18n/`; never hard-code user-facing strings once Phase 0 step 0.6 is done.
 
 ## Working style
 
-- Before building a feature, read: its roadmap step in `docs/06-build-roadmap.md`, the same step number in `docs/10-technical-execution-plan.md` (exact migrations/files/tests — follow the reserved migration numbering), the screen spec in `docs/09-screen-specs.md`, the module spec in `docs/03-feature-specs.md`, and the live PMS evidence in `docs/12-pms-sitemap-research.md` plus `docs/13-pms-screenshot-sitemap-crosswalk.md` (`docs/07-ai-features.md` for AI features).
-- **eZee Absolute parity is a baseline requirement.** `docs/11-ezee-absolute-page-map.md` maps every eZee screen/operation to its GulfHero home; `docs/12-pms-sitemap-research.md` confirms the live route/tab/control/table/form inventory; `docs/13-pms-screenshot-sitemap-crosswalk.md` ties that sitemap to the Google Drive screenshot layouts. When building a module, check all three sources so no capability or desktop layout pattern is missed. Parity = same pages, workflows, and capabilities — never a visual clone of eZee's design or copy.
+- Before building a feature, read: its roadmap step in `docs/06-build-roadmap.md`, the same step number in `docs/10-technical-execution-plan.md` (exact migrations/files/tests — follow the reserved migration numbering), the screen spec in `docs/09-screen-specs.md`, the module spec in `docs/03-feature-specs.md`, the live PMS evidence in `docs/12-pms-sitemap-research.md` plus `docs/13-pms-screenshot-sitemap-crosswalk.md`, and the UI kit rules in `docs/14-pms-design-system.md` (`docs/07-ai-features.md` for AI features).
+- **eZee Absolute parity is a baseline requirement.** `docs/11-ezee-absolute-page-map.md` maps every eZee screen/operation to its GulfHero home; `docs/12-pms-sitemap-research.md` confirms the live route/tab/control/table/form inventory; `docs/13-pms-screenshot-sitemap-crosswalk.md` ties that sitemap to the Google Drive screenshot layouts; `docs/14-pms-design-system.md` defines the Ant Design implementation system. When building a module, check all four sources so no capability, desktop layout pattern, or component behavior is missed. Parity = same pages, workflows, and capabilities — never a visual clone of eZee's design or copy.
 - After completing a roadmap step, tick its checkbox in `docs/06-build-roadmap.md` in the same commit.
 - Run `npm run lint && npm run typecheck && npm test` before committing; fix what you broke.
 - Prefer small, complete vertical slices (DB → server action → UI → test) over broad scaffolding.

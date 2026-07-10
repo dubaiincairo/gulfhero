@@ -29,6 +29,7 @@ This project is built with **AI vibe coding**: every feature is implemented step
 | [`docs/11-ezee-absolute-page-map.md`](docs/11-ezee-absolute-page-map.md) | Screen-by-screen map of eZee Absolute (from its official manuals) → GulfHero parity reference |
 | [`docs/12-pms-sitemap-research.md`](docs/12-pms-sitemap-research.md) | Live PMS crawl: confirmed routes, tabs, controls, table columns, forms, gaps, and recommended next crawl passes |
 | [`docs/13-pms-screenshot-sitemap-crosswalk.md`](docs/13-pms-screenshot-sitemap-crosswalk.md) | Crosswalk between the live PMS sitemap and the Google Drive screenshot groups; use this as the visual/route source of truth |
+| [`docs/14-pms-design-system.md`](docs/14-pms-design-system.md) | Official PMS design-system decision: Ant Design React kit, compact PMS theme tokens, component mapping, and drawer/table rules |
 
 ## Current status
 
