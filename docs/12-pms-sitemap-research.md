@@ -1927,16 +1927,26 @@ These are the known missing or incomplete parts.
 - Pulse AI:
   - Detailed agent settings for each AI agent tab
 
-### Operational Modals And Action Flows Not Opened
+### Operational Modals And Action Flows
 
-These were not opened because they may change live operational state or expose sensitive data:
+The 2026-07-11 demo-account pass safely opened and documented these reversible forms without saving:
 
 - Add Reservation
 - Assign Room
+- Reservation summary drawer
+- Reservation workspace tabs
+- Add Payment
+- Add Charges
+- Apply Discount
+- Folio Operations
+- Add Task
+
+See `docs/15-pms-demo-deep-crawl.md` for the confirmed fields and interaction hierarchy.
+
+These terminal or higher-risk flows remain unopened beyond their visible entry controls:
+
 - Check-in
 - Checkout
-- Payment
-- Folio edits
 - Void
 - Refund
 - Delete
@@ -2001,13 +2011,14 @@ Only selected safe Add forms were captured. These still need deeper form mapping
 - `/unity/rulestriggeraudittrail`
 - `/unity/smartpricingsettings`
 
-### Live Record Detail Pages Not Included
+### Live Record Detail Pages
 
-These were intentionally skipped to avoid collecting sensitive operational data:
+The demo-account pass documented the reservation summary drawer, seven-tab reservation workspace, folio structure, and safe nested Add forms without storing private record values. See `docs/15-pms-demo-deep-crawl.md`.
+
+These remain intentionally excluded or incomplete:
 
 - Guest profiles
-- Reservation detail drawers
-- Folio/invoice details
+- Posted invoice/payment record details
 - Payment records
 - Travel agent/company balances
 - Housekeeping assignments with live names

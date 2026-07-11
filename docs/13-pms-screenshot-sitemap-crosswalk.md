@@ -7,6 +7,7 @@ Date: 2026-07-09
 This document connects two evidence sources for the GulfHero PMS build:
 
 - `docs/12-pms-sitemap-research.md`: route, navigation, tab, table, control, and field inventory from the live PMS crawl.
+- `docs/15-pms-demo-deep-crawl.md`: demo-account verification of global search, reservation details, and temporary operational workspaces.
 - The Google Drive screenshot set: visual page layout, spacing, density, drawer behavior, page tabs, and real screen composition.
 
 The sitemap tells us what must exist. The screenshots tell us how the PMS behaves and how dense each page should feel on desktop.
@@ -14,6 +15,7 @@ The sitemap tells us what must exist. The screenshots tell us how the PMS behave
 ## Source Materials
 
 - Sitemap research PR file: `docs/12-pms-sitemap-research.md`
+- Demo deep-crawl supplement: `docs/15-pms-demo-deep-crawl.md`
 - Screenshot Drive source: `1iDBSQLXFPSoji7SwI9TvT4ChPVV7Vpab`
 - Local screenshot grouping workspace: `/Users/abdallahelfouly/Documents/Gulf Hero/organized-screenshots`
 
@@ -68,6 +70,8 @@ Build interpretation:
 
 - Search results are a temporary overlay.
 - Reservation detail is a real workspace state after selection, not just a small popup.
+- A reservation summary first opens as a temporary drawer; Edit Reservation then promotes it into the seven-tab full-width temporary workspace.
+- Folio actions such as Add Payment, Add Charge, Apply Discount, and Add Task open nested temporary forms and return to the preserved reservation state on Cancel/Close.
 - This flow should strongly inform the GulfHero top search behavior.
 
 ### Reservation View
