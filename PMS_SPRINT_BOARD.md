@@ -42,8 +42,9 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
 - [ ] Room View: polish the room-state board and its detail/action surfaces.
 - [ ] Rates and Availability: complete all tabs, edit states, and rate detail
       drawer consistency.
-- [ ] Booking Engine: Booking Engine Summary, Settings, Analytics & Tracking,
-      Customization, and Preferences as desktop prototype tabs.
+- [x] Booking Engine: Booking Engine Summary, Settings, Analytics & Tracking,
+      Customization, and Preferences as desktop prototype tabs, plus a local
+      desktop preview drawer that intentionally stops before checkout/payment.
 - [ ] Cashiering and Cash Drawer: source-style list, drawer session/report
       tabs, and temporary Create Drawer workflow.
 - [ ] Housekeeping: House Status, Maintenance Block, and Work Order/Task
@@ -72,3 +73,7 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
 
 - 2026-07-12: Reservation detail workflow, Rooms and Rates configuration, and
   Stay View were implemented and browser-verified locally.
+- 2026-07-13: Completed the local-only Booking Engine desktop prototype and
+  fixed the Housekeeping room-table key warning. Browser-verified navigation,
+  tabs, preview drawer, local actions, 1440px layout, and clean console; build
+  passes. Next: Room View polish.
