@@ -1,0 +1,24 @@
+{
+  "name": "gulf-hero-pms",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.3.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "antd": "^6.5.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "vite": "^6.0.7"
+  },
+  "devDependencies": {
+    "agent-browser": "^0.31.1",
+    "playwright": "^1.61.1"
+  }
+}

@@ -1,0 +1,6 @@
+.vercel
+node_modules
+dist
+.playwright-mcp
+qa-screens
+.DS_Store

@@ -1,0 +1,74 @@
+# Gulf Hero PMS Sprint Board
+
+## Goal
+
+Deliver a desktop-only, visually faithful PMS prototype ready for publication.
+The prototype must use polished mock data, working navigation, tabs, filters,
+drawers, and temporary modal workflows. It is not a live transactional PMS.
+
+## Scope Rules
+
+- Preserve the source-informed eZee/iPMS desktop visual language.
+- Build the Booking Engine configuration module as a visual desktop prototype,
+  but do not connect it to a live booking endpoint or payment system.
+- Do not build Marketplace, integrations, real payments, checkout, Night Audit
+  execution, or external system connections.
+- Keep dialogs, menus, and side panels temporary. Do not turn them into
+  permanent page content.
+- Do not deploy, push, or alter production without an explicit user request.
+- Use verified SwissBlue Hotel Jeddah property data from the supplied source
+  screenshots and research. Use only English client-name fixtures that have
+  been explicitly approved for the prototype; do not copy live guest personal
+  data from the demo account.
+- Import room numbers under each room type only when they are source-verified.
+- Read `PMS_SITEMAP_RESEARCH.md` before implementing a source-sensitive page.
+
+## Completed
+
+- [x] Application shell, desktop navigation, header controls, and temporary
+      quick-menu, alerts, announcements, and user-menu surfaces.
+- [x] Reservation list, temporary reservation detail drawer, action menus, and
+      reservation workspace tabs.
+- [x] Stay View: 12-day room matrix, room-type availability context,
+      collapsible groups, filters, matching reservation detail links, and the
+      temporary date-first room-assignment drawer.
+- [x] Configuration: Rooms and Rates hierarchy, the supplied ten room types,
+      Room Only Flexible, and Room Only Non-Refundable rate plans.
+- [x] SwissBlue Superior King Room numbers imported from the verified Stay View
+      reference: 111, 211, 311, 411, 511, 611, 701, 702, 703, 704.
+
+## Remaining Build Waves
+
+- [ ] Room View: polish the room-state board and its detail/action surfaces.
+- [ ] Rates and Availability: complete all tabs, edit states, and rate detail
+      drawer consistency.
+- [ ] Booking Engine: Booking Engine Summary, Settings, Analytics & Tracking,
+      Customization, and Preferences as desktop prototype tabs.
+- [ ] Cashiering and Cash Drawer: source-style list, drawer session/report
+      tabs, and temporary Create Drawer workflow.
+- [ ] Housekeeping: House Status, Maintenance Block, and Work Order/Task
+      workspaces with temporary forms.
+- [ ] Guest and CRM: guest records, notes, Lost and Found, and temporary forms.
+- [ ] Reports: legacy-style taxonomy, operational filters, preview and export
+      states.
+- [ ] Cross-module polish: every visible tab/action has a finished desktop
+      surface, no placeholder layouts, and no dead primary controls.
+- [ ] Desktop QA: 1440px and large-desktop visual review, build validation,
+      then an explicit deployment decision.
+
+## Scheduled Run Checklist
+
+1. Read this board and the source research.
+2. Implement the first unfinished wave or the highest-impact remaining gap.
+3. Keep edits scoped; do not replace unrelated completed work.
+4. Start or reuse a local dev server, test the changed workflow with Playwright,
+   and inspect screenshots when UI layout changes.
+5. Run `npm run build`.
+6. Commit only the intentional source changes and push the active prototype
+   branch to GitHub after the build and visual verification succeed.
+7. Mark the completed board item and add one concise log entry below.
+
+## Run Log
+
+- 2026-07-12: Reservation detail workflow, Rooms and Rates configuration, and
+  Stay View were implemented and browser-verified locally.
