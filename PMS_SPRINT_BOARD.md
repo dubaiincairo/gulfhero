@@ -44,6 +44,9 @@ context, and configurable modules, but all prototype data stays local fixtures.
       quick-menu, alerts, announcements, and user-menu surfaces.
 - [x] Reservation list, temporary reservation detail drawer, action menus, and
       reservation workspace tabs.
+- [x] Add Reservation local model: fixture-only multi-room stay creation,
+      VAT/discount totals, unassigned-room handling, reservation detail, and
+      room-type availability updates.
 - [x] Stay View: 12-day room matrix, room-type availability context,
       collapsible groups, filters, matching reservation detail links, and the
       temporary date-first room-assignment drawer.
@@ -175,3 +178,7 @@ context, and configurable modules, but all prototype data stays local fixtures.
   guide/boundary feedback. Browser-verified at 1440px and 1680px with no
   relevant console errors; build passes. Next: make Add Reservation mutate a
   coherent in-memory reservation/inventory model before the readiness gate.
+- 2026-07-13 19:00: Completed the fixture-only Add Reservation local-state
+  wave: multi-room rate/VAT totals, unassigned-room handling, coherent detail,
+  and room-type availability updates. Playwright visual workflow checks and
+  build pass. Next: cross-module polish and final desktop QA.
