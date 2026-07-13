@@ -233,7 +233,6 @@ function App() {
   const [assignRoomOpen, setAssignRoomOpen] = useState(false);
   const [guestDrawerOpen, setGuestDrawerOpen] = useState(false);
   const [configDrawer, setConfigDrawer] = useState(null);
-  const [taskDrawerOpen, setTaskDrawerOpen] = useState(false);
   const [headerPanel, setHeaderPanel] = useState(null);
   const [announcementsOpen, setAnnouncementsOpen] = useState(false);
 
@@ -293,7 +292,7 @@ function App() {
           {module === "distribution" && <DistributionSurface />}
           {module === "guests" && <GuestSurface onAdd={() => setGuestDrawerOpen(true)} onOpenReservation={() => openReservation(reservations[0])} />}
           {module === "cashiering" && <CashieringSurface />}
-          {module === "housekeeping" && <HousekeepingSurface roomRows={roomRows} onAddTask={() => setTaskDrawerOpen(true)} />}
+          {module === "housekeeping" && <HousekeepingSurface roomRows={roomRows} />}
           {module === "reports" && <ReportsSurface />}
           {module === "configuration" && <ConfigurationSurface onAdd={setConfigDrawer} />}
         </main>
@@ -334,7 +333,6 @@ function App() {
       <AssignRoomDrawer open={assignRoomOpen} onClose={() => setAssignRoomOpen(false)} />
       <EntityDrawer open={guestDrawerOpen} title="Add Guest" onClose={() => setGuestDrawerOpen(false)} fields={["Full Name", "Mobile", "Email", "Nationality", "Guest Type"]} action="Add Guest" />
       <EntityDrawer open={Boolean(configDrawer)} title={configDrawer?.title || "Add Record"} onClose={() => setConfigDrawer(null)} fields={["Name", "Description"]} action={configDrawer?.action || "Save"} />
-      <EntityDrawer open={taskDrawerOpen} title="Add Task" onClose={() => setTaskDrawerOpen(false)} fields={["Unit / Room", "Category", "Priority", "Description", "Due Date", "Assign To"]} action="Save Task" />
       <HeaderPopover kind={headerPanel} onClose={() => setHeaderPanel(null)} onNavigate={changeModule} />
       <ProductAnnouncementsDrawer open={announcementsOpen} onClose={() => setAnnouncementsOpen(false)} />
     </div>

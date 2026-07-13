@@ -48,7 +48,7 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
       desktop preview drawer that intentionally stops before checkout/payment.
 - [x] Cashiering and Cash Drawer: source-style list, drawer session/report
       tabs, and temporary Create Drawer workflow.
-- [ ] Housekeeping: House Status, Maintenance Block, and Work Order/Task
+- [x] Housekeeping: House Status, Maintenance Block, and Work Order/Task
       workspaces with temporary forms.
 - [ ] Guest and CRM: guest records, notes, Lost and Found, and temporary forms.
 - [ ] Reports: legacy-style taxonomy, operational filters, preview and export
@@ -93,3 +93,8 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
   verified the payment boundary, drawer creation, local report row, audit
   trail, and 1440px desktop layout with no relevant console errors; build
   passes. Next: Housekeeping.
+- 2026-07-13 22:00: Completed Housekeeping with source-informed House Status,
+  Maintenance Block, and Work Order/Task workspaces. Playwright verified a
+  local maintenance block, temporary task form, local task resolution, and
+  1440px desktop layout with no relevant console errors; build passes. Next:
+  Guest and CRM.
