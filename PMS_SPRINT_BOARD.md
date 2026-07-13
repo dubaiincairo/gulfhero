@@ -41,7 +41,7 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
 
 - [x] Room View: source-informed room-state control board, count filters,
       local date controls, and temporary room detail/housekeeping surfaces.
-- [ ] Rates and Availability: complete all tabs, edit states, and rate detail
+- [x] Rates and Availability: complete all tabs, edit states, and rate detail
       drawer consistency.
 - [x] Booking Engine: Booking Engine Summary, Settings, Analytics & Tracking,
       Customization, and Preferences as desktop prototype tabs, plus a local
@@ -82,3 +82,8 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
   counters, color-coded room cards, local date navigation, and a temporary
   room detail/housekeeping workflow. Verified at 1440px with Playwright and a
   clean console; build passes. Next: Rates and Availability completion.
+- 2026-07-13 22:00: Completed Rates and Availability with local rate edits,
+  working plan/tax/derived filters, independent restriction matrices, save
+  states, and completed rate-detail tabs. Playwright verified all tabs,
+  grid edits, local saves, filters, and drawer states at 1440px; build passes.
+  Next: Cashiering and Cash Drawer.
