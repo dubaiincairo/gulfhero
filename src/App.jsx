@@ -231,7 +231,6 @@ function App() {
   const [addReservationOpen, setAddReservationOpen] = useState(false);
   const [reservationSearchOpen, setReservationSearchOpen] = useState(false);
   const [assignRoomOpen, setAssignRoomOpen] = useState(false);
-  const [guestDrawerOpen, setGuestDrawerOpen] = useState(false);
   const [configDrawer, setConfigDrawer] = useState(null);
   const [headerPanel, setHeaderPanel] = useState(null);
   const [announcementsOpen, setAnnouncementsOpen] = useState(false);
@@ -290,7 +289,7 @@ function App() {
           {module === "rooms" && <RoomView onOpenReservation={() => openReservation(reservations[0])} />}
           {module === "rates" && <RatesSurface businessDates={businessDates} rateGroups={rateGroups} />}
           {module === "distribution" && <DistributionSurface />}
-          {module === "guests" && <GuestSurface onAdd={() => setGuestDrawerOpen(true)} onOpenReservation={() => openReservation(reservations[0])} />}
+          {module === "guests" && <GuestSurface roomRows={roomRows} />}
           {module === "cashiering" && <CashieringSurface />}
           {module === "housekeeping" && <HousekeepingSurface roomRows={roomRows} />}
           {module === "reports" && <ReportsSurface />}
@@ -331,7 +330,6 @@ function App() {
       <AddReservationDrawer open={addReservationOpen} onClose={() => setAddReservationOpen(false)} onReserve={(record) => { setAddReservationOpen(false); setModule("reservations"); openReservation(record); }} />
       <ReservationSearchDrawer open={reservationSearchOpen} onClose={() => setReservationSearchOpen(false)} onOpenReservation={openReservation} />
       <AssignRoomDrawer open={assignRoomOpen} onClose={() => setAssignRoomOpen(false)} />
-      <EntityDrawer open={guestDrawerOpen} title="Add Guest" onClose={() => setGuestDrawerOpen(false)} fields={["Full Name", "Mobile", "Email", "Nationality", "Guest Type"]} action="Add Guest" />
       <EntityDrawer open={Boolean(configDrawer)} title={configDrawer?.title || "Add Record"} onClose={() => setConfigDrawer(null)} fields={["Name", "Description"]} action={configDrawer?.action || "Save"} />
       <HeaderPopover kind={headerPanel} onClose={() => setHeaderPanel(null)} onNavigate={changeModule} />
       <ProductAnnouncementsDrawer open={announcementsOpen} onClose={() => setAnnouncementsOpen(false)} />

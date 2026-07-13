@@ -50,7 +50,7 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
       tabs, and temporary Create Drawer workflow.
 - [x] Housekeeping: House Status, Maintenance Block, and Work Order/Task
       workspaces with temporary forms.
-- [ ] Guest and CRM: guest records, notes, Lost and Found, and temporary forms.
+- [x] Guest and CRM: guest records, notes, Lost and Found, and temporary forms.
 - [ ] Reports: legacy-style taxonomy, operational filters, preview and export
       states.
 - [ ] Cross-module polish: every visible tab/action has a finished desktop
@@ -98,3 +98,9 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
   local maintenance block, temporary task form, local task resolution, and
   1440px desktop layout with no relevant console errors; build passes. Next:
   Guest and CRM.
+- 2026-07-13 22:00: Completed Guest and CRM with a privacy-safe Guest Database,
+  temporary room-linked profile and note forms, Front Desk Operations, and
+  source-style Lost and Found flows. Playwright verified local profile and
+  found-item saves, the complete temporary note form, the Housekeeping service
+  tabs, and 1440px desktop layout with no relevant console errors; build
+  passes. Next: Reports.
