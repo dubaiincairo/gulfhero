@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Checkbox,
@@ -61,6 +61,7 @@ import {
   RatesView as RatesSurface,
   ReportsView as ReportsSurface
 } from "./operationalViews";
+import { supabase, supabaseConfigured } from "./lib/supabase";
 
 const businessDates = [
   { dow: "Thu", day: "09", month: "Jul", sold: 26, available: 49 },
@@ -112,22 +113,28 @@ const roomTypeOptions = [{ value: "-Select-", label: "-Select-" }, ...roomTypes.
 const ratePlanOptions = [{ value: "-Select-", label: "-Select-" }, { value: "Room Only Flexible", label: "Room Only Flexible" }, { value: "Room Only Non-Refundable", label: "Room Only Non-Refundable" }];
 
 const reservations = [
-  { id: "R-30251", guest: "Omar Hassan", room: "412", roomType: "Executive Suite", arrival: "09 Jul", departure: "12 Jul", nights: 3, status: "In house", balance: "1,280.00", source: "Direct", vip: true },
-  { id: "R-30243", guest: "Salma Alomary", room: "305", roomType: "Deluxe King Room City View", arrival: "09 Jul", departure: "10 Jul", nights: 1, status: "Arriving", balance: "0.00", source: "Corporate", vip: false },
-  { id: "R-30237", guest: "Khalid Alharbi", room: "214", roomType: "Superior Twin Room", arrival: "08 Jul", departure: "11 Jul", nights: 3, status: "In house", balance: "540.00", source: "Online Booking", vip: false },
-  { id: "R-30219", guest: "Noura Alsubaie", room: "118", roomType: "Superior Twin Room", arrival: "09 Jul", departure: "13 Jul", nights: 4, status: "Confirmed", balance: "200.00", source: "Direct", vip: false },
-  { id: "R-30198", guest: "Faris Aldossary", room: "203", roomType: "Junior Suite", arrival: "07 Jul", departure: "09 Jul", nights: 2, status: "Due out", balance: "0.00", source: "Travel Agent", vip: true },
-  { id: "R-30179", guest: "Lina Rahman", room: "101", roomType: "Superior King Room", arrival: "06 Jul", departure: "10 Jul", nights: 4, status: "In house", balance: "720.00", source: "Direct", vip: false }
+  { id: "R-30251", guest: "James Carter", room: "412", roomType: "Executive Suite", arrival: "09 Jul", departure: "12 Jul", nights: 3, status: "In house", balance: "1,280.00", source: "Direct", vip: true },
+  { id: "R-30243", guest: "Olivia Bennett", room: "305", roomType: "Deluxe King Room City View", arrival: "09 Jul", departure: "10 Jul", nights: 1, status: "Arriving", balance: "0.00", source: "Corporate", vip: false },
+  { id: "R-30237", guest: "Daniel Brooks", room: "214", roomType: "Superior Twin Room", arrival: "08 Jul", departure: "11 Jul", nights: 3, status: "In house", balance: "540.00", source: "Online Booking", vip: false },
+  { id: "R-30219", guest: "Emma Wilson", room: "118", roomType: "Superior Twin Room", arrival: "09 Jul", departure: "13 Jul", nights: 4, status: "Confirmed", balance: "200.00", source: "Direct", vip: false },
+  { id: "R-30198", guest: "Michael Hayes", room: "203", roomType: "Junior Suite", arrival: "07 Jul", departure: "09 Jul", nights: 2, status: "Due out", balance: "0.00", source: "Travel Agent", vip: true },
+  { id: "R-30179", guest: "Sophia Turner", room: "101", roomType: "Superior King Room", arrival: "06 Jul", departure: "10 Jul", nights: 4, status: "In house", balance: "720.00", source: "Direct", vip: false },
+  { id: "R-30265", guest: "Grace Mitchell", room: "102", roomType: "Superior King Room", arrival: "12 Jul", departure: "14 Jul", nights: 2, status: "Arriving", balance: "0.00", source: "Corporate", vip: false },
+  { id: "R-30272", guest: "Henry Collins", room: "111", roomType: "Superior King Room", arrival: "16 Jul", departure: "19 Jul", nights: 3, status: "Confirmed", balance: "340.00", source: "Direct", vip: false },
+  { id: "R-30276", guest: "Oliver Reed", room: "415", roomType: "Executive Suite", arrival: "14 Jul", departure: "17 Jul", nights: 3, status: "Confirmed", balance: "1,650.00", source: "Travel Agent", vip: true },
+  { id: "R-30281", guest: "Charlotte King", room: "207", roomType: "Junior Suite", arrival: "15 Jul", departure: "18 Jul", nights: 3, status: "Confirmed", balance: "0.00", source: "Online Booking", vip: false },
+  { id: "R-30285", guest: "Thomas Walker", room: "603", roomType: "Deluxe Junior Suite King Bed", arrival: "09 Jul", departure: "13 Jul", nights: 4, status: "In house", balance: "975.00", source: "Direct", vip: false },
+  { id: "R-30291", guest: "Amelia Parker", room: "—", roomType: "Presidential Suite City View", arrival: "18 Jul", departure: "20 Jul", nights: 2, status: "Blocked", balance: "0.00", source: "Corporate", vip: true }
 ];
 
 const stayRoomGroups = [
   {
     name: "Superior King Room",
     rooms: [
-      { number: "101", condition: "Inspected", status: "Occupied", bookings: [{ start: 0, length: 2, label: "Lina Rahman", status: "In house", tone: "in-house", reservation: reservations[5] }] },
-      { number: "102", condition: "Clean", status: "Reserved", bookings: [{ start: 3, length: 4, label: "Maya Patel", status: "Confirmed", tone: "confirmed", reservation: reservations[3] }] },
+      { number: "101", condition: "Inspected", status: "Occupied", bookings: [{ start: 0, length: 2, label: "Sophia Turner", status: "In house", tone: "in-house", reservation: reservations[5] }] },
+      { number: "102", condition: "Clean", status: "Reserved", bookings: [{ start: 3, length: 2, label: "Grace Mitchell", status: "Arriving", tone: "confirmed", reservation: reservations[6] }] },
       { number: "105", condition: "Dirty", status: "Vacant", bookings: [] },
-      { number: "111", condition: "Clean", status: "Reserved", bookings: [{ start: 7, length: 3, label: "Huda Khan", status: "Confirmed", tone: "confirmed", reservation: reservations[3] }] }
+      { number: "111", condition: "Clean", status: "Reserved", bookings: [{ start: 7, length: 3, label: "Henry Collins", status: "Confirmed", tone: "confirmed", reservation: reservations[7] }] }
     ],
     availability: [5, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10],
     rate: 575
@@ -135,9 +142,9 @@ const stayRoomGroups = [
   {
     name: "Superior Twin Room",
     rooms: [
-      { number: "118", condition: "Inspected", status: "Reserved", bookings: [{ start: 0, length: 4, label: "Noura Alsubaie", status: "Confirmed", tone: "confirmed", reservation: reservations[3] }] },
+      { number: "118", condition: "Inspected", status: "Reserved", bookings: [{ start: 0, length: 4, label: "Emma Wilson", status: "Confirmed", tone: "confirmed", reservation: reservations[3] }] },
       { number: "201", condition: "Clean", status: "Vacant", bookings: [] },
-      { number: "214", condition: "Dirty", status: "Occupied", bookings: [{ start: 0, length: 2, label: "Khalid Alharbi", status: "In house", tone: "in-house", reservation: reservations[2] }] }
+      { number: "214", condition: "Dirty", status: "Occupied", bookings: [{ start: 0, length: 2, label: "Daniel Brooks", status: "In house", tone: "in-house", reservation: reservations[2] }] }
     ],
     availability: [4, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8],
     rate: 575
@@ -145,8 +152,8 @@ const stayRoomGroups = [
   {
     name: "Executive Suite",
     rooms: [
-      { number: "412", condition: "Clean", status: "Occupied", bookings: [{ start: 0, length: 3, label: "Omar Hassan", status: "In house", tone: "in-house", reservation: reservations[0] }] },
-      { number: "415", condition: "Inspected", status: "Vacant", bookings: [{ start: 5, length: 2, label: "S. Alharbi", status: "Confirmed", tone: "confirmed", reservation: reservations[1] }] }
+      { number: "412", condition: "Clean", status: "Occupied", bookings: [{ start: 0, length: 3, label: "James Carter", status: "In house", tone: "in-house", reservation: reservations[0] }] },
+      { number: "415", condition: "Inspected", status: "Reserved", bookings: [{ start: 5, length: 2, label: "Oliver Reed", status: "Confirmed", tone: "confirmed", reservation: reservations[8] }] }
     ],
     availability: [1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3],
     rate: 980
@@ -154,9 +161,9 @@ const stayRoomGroups = [
   {
     name: "Junior Suite",
     rooms: [
-      { number: "203", condition: "Inspected", status: "Due Out", bookings: [{ start: 0, length: 1, label: "Faris Aldossary", status: "Due out", tone: "due-out", reservation: reservations[4] }] },
+      { number: "203", condition: "Inspected", status: "Due Out", bookings: [{ start: 0, length: 1, label: "Michael Hayes", status: "Due out", tone: "due-out", reservation: reservations[4] }] },
       { number: "204", condition: "Maintenance", status: "Blocked", bookings: [{ start: 0, length: 5, label: "Maintenance block", status: "Blocked", tone: "blocked" }] },
-      { number: "207", condition: "Clean", status: "Vacant", bookings: [] }
+      { number: "207", condition: "Clean", status: "Reserved", bookings: [{ start: 6, length: 3, label: "Charlotte King", status: "Confirmed", tone: "confirmed", reservation: reservations[9] }] }
     ],
     availability: [2, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4],
     rate: 790
@@ -164,16 +171,18 @@ const stayRoomGroups = [
 ];
 
 const roomRows = [
-  { number: "101", type: "Superior King Room", guest: "Lina Rahman", status: "Occupied", condition: "Clean", note: "Stayover linen" },
-  { number: "102", type: "Superior King Room", guest: "Available", status: "Vacant", condition: "Clean", note: "Ready" },
-  { number: "118", type: "Superior Twin Room", guest: "Noura Alsubaie", status: "Reserved", condition: "Dirty", note: "Arrival 15:00" },
-  { number: "203", type: "Junior Suite", guest: "Faris Aldossary", status: "Due out", condition: "Inspected", note: "Late checkout" },
-  { number: "214", type: "Superior Twin Room", guest: "Khalid Alharbi", status: "Occupied", condition: "Dirty", note: "Maintenance" },
-  { number: "305", type: "Deluxe King Room City View", guest: "Salma Alomary", status: "Reserved", condition: "Clean", note: "Arrival today" },
-  { number: "412", type: "Executive Suite", guest: "Omar Hassan", status: "Occupied", condition: "Clean", note: "VIP stay" },
-  { number: "415", type: "Executive Suite", guest: "Available", status: "Vacant", condition: "Clean", note: "Ready" },
+  { number: "101", type: "Superior King Room", guest: "Sophia Turner", status: "Occupied", condition: "Clean", note: "Stayover linen" },
+  { number: "102", type: "Superior King Room", guest: "Grace Mitchell", status: "Reserved", condition: "Clean", note: "Arrival 15:00" },
+  { number: "111", type: "Superior King Room", guest: "Henry Collins", status: "Reserved", condition: "Clean", note: "Arrival 16:00" },
+  { number: "118", type: "Superior Twin Room", guest: "Emma Wilson", status: "Reserved", condition: "Dirty", note: "Arrival 15:00" },
+  { number: "203", type: "Junior Suite", guest: "Michael Hayes", status: "Due out", condition: "Inspected", note: "Late checkout" },
+  { number: "207", type: "Junior Suite", guest: "Charlotte King", status: "Reserved", condition: "Clean", note: "Arrival 18:00" },
+  { number: "214", type: "Superior Twin Room", guest: "Daniel Brooks", status: "Occupied", condition: "Dirty", note: "Maintenance" },
+  { number: "305", type: "Deluxe King Room City View", guest: "Olivia Bennett", status: "Reserved", condition: "Clean", note: "Arrival today" },
+  { number: "412", type: "Executive Suite", guest: "James Carter", status: "Occupied", condition: "Clean", note: "VIP stay" },
+  { number: "415", type: "Executive Suite", guest: "Oliver Reed", status: "Reserved", condition: "Inspected", note: "VIP arrival" },
   { number: "512", type: "Presidential Suite City View", guest: "Available", status: "Blocked", condition: "Maintenance", note: "AC service" },
-  { number: "603", type: "Deluxe Junior Suite King Bed", guest: "Available", status: "Vacant", condition: "Dirty", note: "Deep clean" }
+  { number: "603", type: "Deluxe Junior Suite King Bed", guest: "Thomas Walker", status: "Occupied", condition: "Clean", note: "Stayover" }
 ];
 
 const rateGroups = roomTypes.map((roomType, index) => ({
@@ -218,7 +227,7 @@ const statusOptions = ["All", "Vacant", "Occupied", "Reserved", "Blocked", "Due 
 const roomStateCounts = { All: 76, Vacant: 29, Occupied: 43, Reserved: 3, Blocked: 1, "Due Out": 20, Dirty: 7 };
 const roomConditionOptions = ["Clean", "Dirty", "Inspected", "Maintenance"];
 
-function App() {
+function PmsWorkspace({ account, databaseMode, onLogout }) {
   const [module, setModule] = useState("dashboard");
   const [railOpen, setRailOpen] = useState(true);
   const [globalSearch, setGlobalSearch] = useState("");
@@ -278,9 +287,10 @@ function App() {
           setHeaderPanel(null);
           setAnnouncementsOpen(true);
         }}
+        account={account}
       />
       <div className={`pms-layout ${railOpen ? "rail-expanded" : "rail-collapsed"}`}>
-        <SideNavigation active={module} expanded={railOpen} onChange={changeModule} />
+        <SideNavigation active={module} databaseMode={databaseMode} expanded={railOpen} onChange={changeModule} />
         <main className="pms-main">
           <ModuleHeader module={module} onAddReservation={() => setAddReservationOpen(true)} />
           {module === "dashboard" && <Dashboard onOpenReservation={() => openReservation(reservations[0])} onNavigate={changeModule} />}
@@ -331,22 +341,19 @@ function App() {
       <ReservationSearchDrawer open={reservationSearchOpen} onClose={() => setReservationSearchOpen(false)} onOpenReservation={openReservation} />
       <AssignRoomDrawer open={assignRoomOpen} onClose={() => setAssignRoomOpen(false)} />
       <EntityDrawer open={Boolean(configDrawer)} title={configDrawer?.title || "Add Record"} onClose={() => setConfigDrawer(null)} fields={["Name", "Description"]} action={configDrawer?.action || "Save"} />
-      <HeaderPopover kind={headerPanel} onClose={() => setHeaderPanel(null)} onNavigate={changeModule} />
+      <HeaderPopover account={account} kind={headerPanel} onClose={() => setHeaderPanel(null)} onLogout={onLogout} onNavigate={changeModule} />
       <ProductAnnouncementsDrawer open={announcementsOpen} onClose={() => setAnnouncementsOpen(false)} />
     </div>
   );
 }
 
-function AppHeader({ globalSearch, onGlobalSearch, onSearchFocus, onMenu, onAddReservation, onNavigate, onOpenHeaderPanel, onOpenAnnouncements }) {
+function AppHeader({ account, globalSearch, onGlobalSearch, onSearchFocus, onMenu, onAddReservation, onNavigate, onOpenHeaderPanel, onOpenAnnouncements }) {
   return (
     <header className="app-header">
       <div className="property-cluster">
         <Tooltip title="Open PMS navigation">
           <button className="header-icon" onClick={onMenu} aria-label="Open PMS navigation"><Menu size={20} /></button>
         </Tooltip>
-        <div className="product-mark">GH</div>
-        <div className="product-name">Gulf Hero PMS</div>
-        <div className="property-divider" />
         <div className="property-switch">
           <span>SwissBlue Hotel Jeddah</span>
           <strong>22888</strong>
@@ -376,7 +383,7 @@ function AppHeader({ globalSearch, onGlobalSearch, onSearchFocus, onMenu, onAddR
         <Tooltip title="System alerts"><button className="header-icon notification-button" onClick={() => onOpenHeaderPanel("system-alerts")} aria-label="System alerts"><Bell size={19} /><b>1</b></button></Tooltip>
         <Tooltip title="Product announcements"><button className="header-icon notification-button" onClick={onOpenAnnouncements} aria-label="Product announcements"><Megaphone size={19} /><b>9+</b></button></Tooltip>
         <span className="header-separator" />
-        <Tooltip title="User menu"><button className="profile-control" onClick={() => onOpenHeaderPanel("profile")} aria-label="User menu"><span className="profile-avatar">A</span><ChevronDown size={14} /></button></Tooltip>
+        <Tooltip title={account.name}><button className="profile-control" onClick={() => onOpenHeaderPanel("profile")} aria-label="User menu"><span className="profile-avatar">{account.initials}</span><ChevronDown size={14} /></button></Tooltip>
       </div>
     </header>
   );
@@ -393,7 +400,7 @@ const quickMenuItems = [
   { label: "Revenue Management Preview", icon: CircleDollarSign, module: "rates", badge: "NEW" }
 ];
 
-function HeaderPopover({ kind, onClose, onNavigate }) {
+function HeaderPopover({ account, kind, onClose, onLogout, onNavigate }) {
   if (!kind) return null;
 
   return (
@@ -409,7 +416,7 @@ function HeaderPopover({ kind, onClose, onNavigate }) {
         </div>
       </section>}
       {kind === "system-alerts" && <SystemAlertsPopover onNavigate={onNavigate} />}
-      {kind === "profile" && <ProfilePopover onClose={onClose} onNavigate={onNavigate} />}
+      {kind === "profile" && <ProfilePopover account={account} onClose={onClose} onLogout={onLogout} onNavigate={onNavigate} />}
     </div>
   );
 }
@@ -433,13 +440,13 @@ function SystemAlertsPopover({ onNavigate }) {
   })}</div><div className="alert-popover-content"><div className="alert-popover-heading"><strong>{tabs.find((item) => item.id === tab).label}</strong><button onClick={() => onNavigate(tab === "channels" ? "distribution" : tab === "overbookings" ? "stay" : "rates")}>See all</button></div><div className="alert-card-list">{current.map((item) => <article className={`alert-card ${item.tone || ""}`} key={item.title}><i /><div><strong>{item.title}</strong>{item.detail && <p>{item.detail}</p>}{item.state && <span>{item.state}</span>}{item.time && <time>{item.time}</time>}</div></article>)}</div></div></section>;
 }
 
-function ProfilePopover({ onClose, onNavigate }) {
+function ProfilePopover({ account, onClose, onLogout, onNavigate }) {
   const primaryActions = [
     { label: "Go to Frontoffice", icon: CalendarDays, module: "reservations" },
     { label: "Point of Sale", icon: CircleDollarSign, module: "cashiering" },
     { label: "Security Advisory", icon: ShieldCheck, module: "configuration" }
   ];
-  return <section className="header-popover profile-popover" aria-label="User menu"><div className="header-popover-arrow" /><div className="profile-popover-user"><span>A</span><b>admin</b><KeyRound size={19} /></div><div className="profile-menu-list">{primaryActions.map((item) => { const Icon = item.icon; return <button key={item.label} onClick={() => onNavigate(item.module)}><Icon size={18} />{item.label}</button>; })}</div><div className="profile-help"><strong>NEED HELP?</strong><button onClick={onClose}><Building2 size={18} />Gulf Hero Academy</button><button onClick={onClose}><Info size={18} />Help Center</button></div><button className="profile-logout" onClick={onClose}><LogOut size={18} />Logout</button></section>;
+  return <section className="header-popover profile-popover" aria-label="User menu"><div className="header-popover-arrow" /><div className="profile-popover-user"><span>{account.initials}</span><b>{account.name}</b><KeyRound size={19} /></div><div className="profile-menu-list">{primaryActions.map((item) => { const Icon = item.icon; return <button key={item.label} onClick={() => onNavigate(item.module)}><Icon size={18} />{item.label}</button>; })}</div><div className="profile-help"><strong>NEED HELP?</strong><button onClick={onClose}><Building2 size={18} />Gulf Hero Academy</button><button onClick={onClose}><Info size={18} />Help Center</button></div><button className="profile-logout" onClick={onLogout}><LogOut size={18} />Logout</button></section>;
 }
 
 const announcements = [
@@ -452,7 +459,7 @@ function ProductAnnouncementsDrawer({ open, onClose }) {
   return <Drawer className="announcement-drawer" onClose={onClose} open={open} placement="right" title="What's new in Gulf Hero PMS" size={460}><div className="announcement-list">{announcements.map((item) => <article className="announcement-card" key={item.title}><time>{item.date}</time><h3>{item.title}</h3><p>{item.body}</p><button className="announcement-read">Read More</button><div className="announcement-feedback"><Tooltip title="Not useful"><button aria-label="Not useful"><X size={15} /></button></Tooltip><Tooltip title="Neutral"><button aria-label="Neutral"><Info size={15} /></button></Tooltip><Tooltip title="Useful"><button aria-label="Useful"><CheckCircle2 size={15} /></button></Tooltip></div></article>)}</div></Drawer>;
 }
 
-function SideNavigation({ active, expanded, onChange }) {
+function SideNavigation({ active, databaseMode, expanded, onChange }) {
   return (
     <aside className="side-navigation" aria-label="PMS modules">
       <div className="nav-label">Operations</div>
@@ -462,7 +469,10 @@ function SideNavigation({ active, expanded, onChange }) {
       <div className="nav-label">Management</div>
       {navigation.slice(6).map((item) => <NavigationItem key={item.id} item={item} active={active} expanded={expanded} onChange={onChange} />)}
       <div className="nav-fill" />
-      <div className="nav-footer"><ShieldCheck size={17} />{expanded && <span>Property secure</span>}</div>
+      <div className="nav-footer">
+        <div className="side-brand"><span>GH</span>{expanded && <div><b>Gulf Hero</b><small>PMS</small></div>}</div>
+        {expanded && <div className="nav-security"><ShieldCheck size={14} /><span>{databaseMode === "configured" ? "Supabase configured" : "Supabase setup required"}</span></div>}
+      </div>
     </aside>
   );
 }
@@ -720,7 +730,7 @@ function DistributionState({ tab }) { const content = { "Rate Controls": ["Local
 
 function GuestView({ onAdd, onOpenReservation }) {
   const [query, setQuery] = useState("");
-  const guests = reservations.map((record, index) => ({ key: record.id, name: record.guest, phone: `+966 5${20000000 + index * 237}`, visits: index + 1, status: index === 2 ? "VIP" : "Active", lastStay: record.departure, record }));
+  const guests = reservations.map((record, index) => ({ key: record.id, name: record.guest, phone: "Not stored", visits: index + 1, status: record.vip ? "VIP" : "Active", lastStay: record.departure, record }));
   const rows = guests.filter((guest) => guest.name.toLowerCase().includes(query.toLowerCase()));
   const columns = [{ title: "Guest Name", dataIndex: "name", render: (name, row) => <button className="table-link" onClick={() => onOpenReservation(row.record)}>{name}</button> }, { title: "Mobile", dataIndex: "phone" }, { title: "Visits", dataIndex: "visits", width: 90 }, { title: "Last Stay", dataIndex: "lastStay", width: 110 }, { title: "Status", dataIndex: "status", width: 105, render: (value) => <StatusTag value={value} /> }, { title: "Action", width: 80, render: () => <button className="table-icon"><MoreVertical size={16} /></button> }];
   return <section className="guest-view"><div className="section-toolbar"><div className="sub-navigation"><button className="selected">Guest Database</button><button>Guest Notes</button><button>Front Desk Operations</button><button>Lost and Found</button></div><div><Input allowClear onChange={(event) => setQuery(event.target.value)} prefix={<Search size={15} />} placeholder="Search guest" value={query} /><Button icon={<Plus size={14} />} onClick={onAdd} size="small">Add Guest</Button></div></div><div className="table-frame"><Table className="pms-table" columns={columns} dataSource={rows} pagination={false} size="small" /></div></section>;
@@ -846,7 +856,7 @@ function ReservationWorkspace({ open, reservation, tab, nestedDrawer, onBack, on
 function FolioOperations({ reservation, onOpenDrawer }) { const [visibility, setVisibility] = useState("Unposted"); const columns = [{ title: "Day", dataIndex: "date", width: 110 }, { title: "Ref No.", dataIndex: "reference", width: 110 }, { title: "Particulars", dataIndex: "particulars", width: 160 }, { title: "Description", dataIndex: "description" }, { title: "User", dataIndex: "user", width: 140 }, { title: "Amount", dataIndex: "amount", width: 110, align: "right", render: (value) => `SAR ${value}` }]; return <div className="folio-workspace"><div className="folio-summary"><div><span>Room / Folio</span><b>{reservation.room} - {reservation.guest}</b></div><div><span>Total</span><b>SAR 2,000.00</b></div><div><span>Balance</span><b>SAR {reservation.balance}</b></div></div><div className="folio-actions"><Button onClick={() => onOpenDrawer("payment")} size="small">Add Payment</Button><Button onClick={() => onOpenDrawer("charge")} size="small">Add Charges</Button><Button onClick={() => onOpenDrawer("discount")} size="small">Apply Discount</Button><Button onClick={() => onOpenDrawer("folio")} size="small">Folio Operations</Button><Button icon={<MoreVertical size={15} />} onClick={() => onOpenDrawer("folio")} size="small">More</Button><span className="folio-spacer" /><Checkbox checked={visibility === "Unposted"} onChange={() => setVisibility("Unposted")}>Unposted</Checkbox><Checkbox checked={visibility === "Posted"} onChange={() => setVisibility("Posted")}>Posted</Checkbox></div><Table className="pms-table" columns={columns} dataSource={folioRows} pagination={false} size="small" /><div className="surface-status"><CheckCircle2 size={14} />Showing {visibility.toLowerCase()} folio entries for this stay.</div></div>; }
 
 function BookingDetails() { const [saved, setSaved] = useState(false); return <div className="reservation-form-grid"><FormSection title="Billing Information" fields={["Bill To", "Type", "Payment Mode", "Registration No.", "Reservation Type"]} values={{ "Bill To": "Guest", Type: "Individual", "Payment Mode": "Cash", "Registration No.": "REG-30251", "Reservation Type": "Guaranteed" }} /><FormSection title="Source Information" fields={["Market Segment", "Business Source", "Travel Agent", "Voucher No.", "Commission Plan", "Plan Value", "Company", "Sales Person"]} values={{ "Market Segment": "Retail", "Business Source": "Direct", "Travel Agent": "-Select-", "Voucher No.": "", "Commission Plan": "Standard", "Plan Value": "0.00", Company: "-Select-", "Sales Person": "Front Desk" }} /><FormSection title="Preferences" fields={["Check-out Note", "Suppress Rate on GR Card", "Include Guest Preferences"]} toggles /><div className="form-save-row"><Button className="primary-command" icon={saved ? <CheckCircle2 size={14} /> : <Save size={14} />} onClick={() => setSaved(true)} size="small">{saved ? "Saved" : "Save"}</Button></div></div>; }
-function GuestDetails() { return <div className="reservation-form-grid guest-details-grid"><FormSection title="Guest" fields={["Name", "Phone", "Mobile", "Email", "Gender", "Guest Type", "VIP Status", "Address", "Zip", "Country", "State", "City", "Nationality", "Company"]} values={{ Name: "Omar Hassan", Phone: "+966 12 648 9933", Mobile: "+966 50 303 9120", Email: "omar.hassan@example.com", Gender: "Male", "Guest Type": "VIP", "VIP Status": "Gold", Address: "Al Hamra District", Zip: "21432", Country: "Saudi Arabia", State: "Makkah", City: "Jeddah", Nationality: "Saudi", Company: "-Select-" }} /><FormSection title="Identity Information" fields={["ID Number", "ID Type", "ID Version No.", "Issuing Country", "Issuing City", "Expiry Date"]} values={{ "ID Number": "10******84", "ID Type": "National ID", "ID Version No.": "1", "Issuing Country": "Saudi Arabia", "Issuing City": "Jeddah", "Expiry Date": "18/06/2031" }} /><FormSection title="Other Information" fields={["Birth Date", "Birth City", "Birth Country", "Spouse Birth Date", "Wedding Anniversary", "Purpose of Visit"]} values={{ "Birth Date": "11/02/1988", "Birth City": "Jeddah", "Birth Country": "Saudi Arabia", "Spouse Birth Date": "", "Wedding Anniversary": "", "Purpose of Visit": "Business" }} /></div>; }
+function GuestDetails() { return <div className="reservation-form-grid guest-details-grid"><FormSection title="Guest" fields={["Name", "Phone", "Mobile", "Email", "Gender", "Guest Type", "VIP Status", "Address", "Zip", "Country", "State", "City", "Nationality", "Company"]} values={{ Name: "James Carter", Phone: "Not stored in fixture", Mobile: "Not stored in fixture", Email: "james.carter@example.test", Gender: "Male", "Guest Type": "VIP", "VIP Status": "Gold", Address: "Not stored in fixture", Zip: "—", Country: "Fixture record", State: "—", City: "—", Nationality: "Not stored", Company: "-Select-" }} /><FormSection title="Identity Information" fields={["ID Number", "ID Type", "ID Version No.", "Issuing Country", "Issuing City", "Expiry Date"]} values={{ "ID Number": "Not stored", "ID Type": "Not stored", "ID Version No.": "—", "Issuing Country": "—", "Issuing City": "—", "Expiry Date": "—" }} /><FormSection title="Other Information" fields={["Birth Date", "Birth City", "Birth Country", "Spouse Birth Date", "Wedding Anniversary", "Purpose of Visit"]} values={{ "Birth Date": "Not stored", "Birth City": "—", "Birth Country": "—", "Spouse Birth Date": "", "Wedding Anniversary": "", "Purpose of Visit": "Business" }} /></div>; }
 function FormSection({ title, fields, toggles, values = {} }) { return <section className="form-section"><h3>{title}</h3><div>{fields.map((field) => <label key={field}>{field}{toggles ? <Switch defaultChecked={field === "Include Guest Preferences"} size="small" /> : field.includes("Type") || field.includes("Country") || field.includes("Source") || field.includes("Company") || field.includes("Plan") || field.includes("Mode") || field === "Gender" || field === "Nationality" || field === "City" || field === "State" ? <Select defaultValue={values[field] || "-Select-"} options={[{ value: "-Select-", label: "-Select-" }, { value: values[field] || "Standard", label: values[field] || "Standard" }, { value: "Standard", label: "Standard" }]} size="small" /> : <Input defaultValue={values[field] || ""} size="small" />}</label>)}</div></section>; }
 function RoomCharges({ onOpenDrawer }) { const [group, setGroup] = useState("All charges"); const rows = [{ key: "1", date: "09 Jul", type: "Room Charge", description: "Executive Suite", amount: "SAR 800.00", tax: "SAR 120.00", status: "Posted" }, { key: "2", date: "09 Jul", type: "Breakfast", description: "Qty 2", amount: "SAR 104.35", tax: "SAR 15.65", status: "Posted" }, { key: "3", date: "10 Jul", type: "Room Charge", description: "Executive Suite", amount: "SAR 800.00", tax: "SAR 120.00", status: "Unposted" }, { key: "4", date: "10 Jul", type: "Late checkout", description: "Pending approval", amount: "SAR 250.00", tax: "SAR 37.50", status: "Pending" }]; const visibleRows = group === "All charges" ? rows : rows.filter((row) => row.status === group); return <div className="folio-workspace"><div className="folio-summary"><div><span>Total room charges</span><b>SAR 1,704.35</b></div><div><span>Taxes</span><b>SAR 255.65</b></div><div><span>Pending adjustments</span><b>SAR 287.50</b></div></div><div className="folio-actions"><Select value={group} onChange={setGroup} options={[{ value: "All charges", label: "All charges" }, { value: "Posted", label: "Posted" }, { value: "Unposted", label: "Unposted" }, { value: "Pending", label: "Pending" }]} size="small" /><span className="folio-spacer" /><Button onClick={() => onOpenDrawer("charge")} size="small">Add Charge</Button><Button onClick={() => onOpenDrawer("discount")} size="small">Add Adjustment</Button></div><div className="table-frame"><Table className="pms-table" columns={[{ title: "Date", dataIndex: "date", width: 100 }, { title: "Charge", dataIndex: "type", width: 140 }, { title: "Description", dataIndex: "description" }, { title: "Amount", dataIndex: "amount", width: 130, align: "right" }, { title: "Tax", dataIndex: "tax", width: 120, align: "right" }, { title: "Status", dataIndex: "status", width: 100, render: (value) => <StatusTag value={value === "Posted" ? "Success" : value} /> }]} dataSource={visibleRows} pagination={false} size="small" /></div></div>; }
 function CreditCardView({ onOpenDrawer }) { const [filter, setFilter] = useState("All"); const rows = [{ key: "1", card: "Visa ending 4021", reference: "AUTH-9F028", amount: "SAR 1,280.00", date: "09 Jul 10:15 AM", status: "Active" }, { key: "2", card: "Mastercard ending 8850", reference: "AUTH-41AB2", amount: "SAR 500.00", date: "08 Jul 03:40 PM", status: "Success" }, { key: "3", card: "Visa ending 4021", reference: "AUTH-VOID", amount: "SAR 0.00", date: "08 Jul 03:42 PM", status: "Void" }]; const visible = filter === "All" ? rows : rows.filter((row) => row.status === filter); return <div className="folio-workspace"><div className="folio-summary"><div><span>Authorization held</span><b>SAR 1,280.00</b></div><div><span>Recorded cards</span><b>02</b></div><div><span>Last verification</span><b>09 Jul, 10:15 AM</b></div></div><div className="folio-actions"><Select value={filter} onChange={setFilter} options={[{ value: "All", label: "All authorizations" }, { value: "Active", label: "Active" }, { value: "Success", label: "Captured" }, { value: "Void", label: "Voided" }]} size="small" /><span className="folio-spacer" /><Button icon={<ShieldCheck size={14} />} onClick={() => onOpenDrawer("card")} size="small">Record Authorization</Button></div><div className="table-frame"><Table className="pms-table" columns={[{ title: "Card reference", dataIndex: "card" }, { title: "Authorization", dataIndex: "reference" }, { title: "Amount", dataIndex: "amount", width: 130, align: "right" }, { title: "Recorded", dataIndex: "date", width: 145 }, { title: "Status", dataIndex: "status", width: 105, render: (value) => <StatusTag value={value} /> }]} dataSource={visible} pagination={false} size="small" /></div></div>; }
@@ -941,13 +951,93 @@ function AssignRoomDrawer({ open, onClose }) {
     onClose();
   };
 
-  return <Drawer className="assign-room-drawer" onClose={closeDrawer} open={open} placement="right" title="Assign Room" size={480}><div className="assign-room-intro"><strong>Choose an arrival date</strong><span>Review unassigned arrivals before selecting an available room.</span></div><label className="assign-date-input">Arrival date<Input readOnly value="09/07/2026" prefix={<CalendarDays size={15} />} /></label><div className="assign-date-strip">{stayDates.slice(0, 7).map((date) => <button aria-pressed={selectedDate === date.day} className={selectedDate === date.day ? "active" : ""} key={date.day} onClick={() => { setSelectedDate(date.day); setAssigned(false); }}><small>{date.dow}</small><b>{date.day}</b><small>{date.month}</small></button>)}</div>{step === "dates" ? <div className="assign-empty"><BedDouble size={26} /><strong>Ready to review arrivals</strong><span>Select a day above, then continue to view reservations that need a room.</span></div> : hasArrivalToAssign ? <div className="assign-worklist"><div className="assign-reservation"><span className="guest-avatar vip">NA</span><div><b>Noura Alsubaie</b><small>R-30219 - Superior Twin Room, 09 Jul to 13 Jul</small></div><StatusTag value={assigned ? "Success" : "Confirmed"} /></div><div className="assign-options"><label><input checked={selectedRoom === "118"} onChange={() => setSelectedRoom("118")} type="radio" name="room" /> <span><b>118</b><small>Superior Twin Room - Clean and ready</small></span></label><label><input checked={selectedRoom === "214"} onChange={() => setSelectedRoom("214")} type="radio" name="room" /> <span><b>214</b><small>Superior Twin Room - Available after inspection</small></span></label></div>{assigned && <div className="surface-status"><CheckCircle2 size={14} />Room {selectedRoom} is assigned for this arrival.</div>}</div> : <div className="assign-empty"><BedDouble size={26} /><strong>No unassigned reservations</strong><span>All arrivals for {selectedDate} Jul already have a room assignment.</span></div>}<div className="drawer-form-actions assign-room-actions">{step === "dates" ? <><Button onClick={closeDrawer}>Cancel</Button><Button className="primary-command" onClick={() => setStep("rooms")}>Next</Button></> : <><Button onClick={() => setStep("dates")}>Back</Button><Button className="primary-command" disabled={!hasArrivalToAssign || assigned} onClick={() => setAssigned(true)}>{assigned ? `Assigned to ${selectedRoom}` : `Assign Room ${selectedRoom}`}</Button></>}</div></Drawer>;
+  return <Drawer className="assign-room-drawer" onClose={closeDrawer} open={open} placement="right" title="Assign Room" size={480}><div className="assign-room-intro"><strong>Choose an arrival date</strong><span>Review unassigned arrivals before selecting an available room.</span></div><label className="assign-date-input">Arrival date<Input readOnly value="09/07/2026" prefix={<CalendarDays size={15} />} /></label><div className="assign-date-strip">{stayDates.slice(0, 7).map((date) => <button aria-pressed={selectedDate === date.day} className={selectedDate === date.day ? "active" : ""} key={date.day} onClick={() => { setSelectedDate(date.day); setAssigned(false); }}><small>{date.dow}</small><b>{date.day}</b><small>{date.month}</small></button>)}</div>{step === "dates" ? <div className="assign-empty"><BedDouble size={26} /><strong>Ready to review arrivals</strong><span>Select a day above, then continue to view reservations that need a room.</span></div> : hasArrivalToAssign ? <div className="assign-worklist"><div className="assign-reservation"><span className="guest-avatar vip">EW</span><div><b>Emma Wilson</b><small>R-30219 - Superior Twin Room, 09 Jul to 13 Jul</small></div><StatusTag value={assigned ? "Success" : "Confirmed"} /></div><div className="assign-options"><label><input checked={selectedRoom === "118"} onChange={() => setSelectedRoom("118")} type="radio" name="room" /> <span><b>118</b><small>Superior Twin Room - Clean and ready</small></span></label><label><input checked={selectedRoom === "214"} onChange={() => setSelectedRoom("214")} type="radio" name="room" /> <span><b>214</b><small>Superior Twin Room - Available after inspection</small></span></label></div>{assigned && <div className="surface-status"><CheckCircle2 size={14} />Room {selectedRoom} is assigned for this arrival.</div>}</div> : <div className="assign-empty"><BedDouble size={26} /><strong>No unassigned reservations</strong><span>All arrivals for {selectedDate} Jul already have a room assignment.</span></div>}<div className="drawer-form-actions assign-room-actions">{step === "dates" ? <><Button onClick={closeDrawer}>Cancel</Button><Button className="primary-command" onClick={() => setStep("rooms")}>Next</Button></> : <><Button onClick={() => setStep("dates")}>Back</Button><Button className="primary-command" disabled={!hasArrivalToAssign || assigned} onClick={() => setAssigned(true)}>{assigned ? `Assigned to ${selectedRoom}` : `Assign Room ${selectedRoom}`}</Button></>}</div></Drawer>;
 }
 function EntityDrawer({ open, title, fields, action, onClose }) { const [saved, setSaved] = useState(false); const save = () => { setSaved(true); window.setTimeout(onClose, 350); }; return <Drawer className="entity-drawer" onClose={onClose} open={open} placement="right" title={title} size={440}><div className="drawer-form">{fields.map((field) => <label key={field}>{field}{field.includes("Type") || field.includes("Role") || field.includes("Folio") || field.includes("Payment") || field.includes("Date") || field.includes("Priority") || field.includes("Category") || field.includes("Assign") || field.includes("Nationality") ? <Select defaultValue="-Select-" options={[{ value: "-Select-", label: "-Select-" }, { value: "Standard", label: "Standard" }]} /> : field.includes("Description") || field.includes("Remark") ? <Input.TextArea rows={3} /> : <Input />}</label>)}{saved && <div className="surface-status"><CheckCircle2 size={14} />Saved locally.</div>}<div className="drawer-form-actions"><Button onClick={onClose}>Cancel</Button><Button className="primary-command" onClick={save}>{saved ? "Saved" : action}</Button></div></div></Drawer>; }
-function QuickActivityDrawer({ kind, onClose }) { if (!kind) return null; const content = { Notifications: [{ title: "Room 214 requires maintenance", detail: "Housekeeping created a high-priority task", time: "24 min" }, { title: "2 arrivals pending room assignment", detail: "Front office action needed before 03:00 PM", time: "36 min" }, { title: "Rate review completed", detail: "Corporate BB was reviewed by Revenue Manager", time: "1 hr" }], Messages: [{ title: "Front Office", detail: "Late checkout request for R-30237 needs review.", time: "Now" }, { title: "Housekeeping", detail: "Room 512 maintenance block remains open.", time: "14 min" }, { title: "Night Audit", detail: "Yesterday's audit pack is ready for review.", time: "1 hr" }], Profile: [{ title: "Sara Alotaibi", detail: "Front Office Manager", time: "Active" }, { title: "Current property", detail: "SwissBlue Hotel Jeddah (22888)", time: "Switch property" }, { title: "Security", detail: "Last sign-in recorded today at 07:03 AM", time: "Secure" }] }[kind]; return <Drawer className="quick-activity-drawer" onClose={onClose} open placement="right" title={kind} size={390}><div className="quick-activity-list">{content.map((item) => <button key={item.title} onClick={onClose}><i className={kind === "Notifications" ? "yellow" : kind === "Messages" ? "blue" : "green"} /><span><b>{item.title}</b><small>{item.detail}</small></span><em>{item.time}</em></button>)}</div><div className="drawer-form-actions"><Button onClick={onClose}>Close</Button></div></Drawer>; }
+function QuickActivityDrawer({ kind, onClose }) { if (!kind) return null; const content = { Notifications: [{ title: "Room 214 requires maintenance", detail: "Housekeeping created a high-priority task", time: "24 min" }, { title: "2 arrivals pending room assignment", detail: "Front office action needed before 03:00 PM", time: "36 min" }, { title: "Rate review completed", detail: "Corporate BB was reviewed by Revenue Manager", time: "1 hr" }], Messages: [{ title: "Front Office", detail: "Late checkout request for R-30237 needs review.", time: "Now" }, { title: "Housekeeping", detail: "Room 512 maintenance block remains open.", time: "14 min" }, { title: "Night Audit", detail: "Yesterday's audit pack is ready for review.", time: "1 hr" }], Profile: [{ title: "Abdalla Elfouly", detail: "PMS Owner", time: "Active" }, { title: "Current property", detail: "SwissBlue Hotel Jeddah (22888)", time: "Switch property" }, { title: "Security", detail: "Supabase access policy ready", time: "Secure" }] }[kind]; return <Drawer className="quick-activity-drawer" onClose={onClose} open placement="right" title={kind} size={390}><div className="quick-activity-list">{content.map((item) => <button key={item.title} onClick={onClose}><i className={kind === "Notifications" ? "yellow" : kind === "Messages" ? "blue" : "green"} /><span><b>{item.title}</b><small>{item.detail}</small></span><em>{item.time}</em></button>)}</div><div className="drawer-form-actions"><Button onClick={onClose}>Close</Button></div></Drawer>; }
 
 function MiniMetric({ label, value, detail, tone }) { return <article className="mini-metric"><span className={tone} /><div><small>{label}</small><strong>{value}</strong><em>{detail}</em></div></article>; }
 function StatusTag({ value }) { const tone = { "In house": "green", Arriving: "yellow", Confirmed: "blue", "Due out": "purple", Occupied: "green", Vacant: "blue", Reserved: "yellow", Blocked: "purple", Clean: "green", Dirty: "yellow", Inspected: "blue", Maintenance: "purple", Success: "green", Queued: "yellow", Connected: "green", Pending: "yellow", VIP: "purple", Active: "green" }[value] || "blue"; return <Tag className={`status-tag ${tone}`}>{value}</Tag>; }
 function EmptyPanel({ label }) { return <div className="empty-workspace compact"><FileText size={23} /><strong>{label}</strong><span>There is no additional information in this prototype state.</span></div>; }
+
+function LoginPage({ onPreview }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const signIn = async (event) => {
+    event.preventDefault();
+    setError("");
+    if (!supabaseConfigured || !supabase) {
+      setError("Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to enable Supabase sign-in.");
+      return;
+    }
+    setLoading(true);
+    const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+    if (authError) setError(authError.message);
+  };
+
+  return <main className="login-shell">
+    <section className="login-brand-rail">
+      <div className="login-property"><span>SwissBlue Hotel Jeddah</span><small>Property 22888</small></div>
+      <div className="login-brand-lockup"><span>GH</span><div><b>Gulf Hero</b><small>PMS</small></div></div>
+    </section>
+    <section className="login-content">
+      <form className="login-card" onSubmit={signIn}>
+        <div className="login-heading"><span className="login-kicker">PROPERTY MANAGEMENT SYSTEM</span><h1>Welcome back, Abdalla</h1><p>Sign in to manage SwissBlue Hotel Jeddah.</p></div>
+        <label>Work email<Input autoComplete="email" onChange={(event) => setEmail(event.target.value)} placeholder="abdalla@example.com" type="email" value={email} /></label>
+        <label>Password<Input autoComplete="current-password" onChange={(event) => setPassword(event.target.value)} placeholder="Enter your password" type="password" value={password} /></label>
+        {error && <div className="login-error" role="alert">{error}</div>}
+        <Button className="login-submit" htmlType="submit" loading={loading} type="primary">Sign in</Button>
+        <div className={`login-database-status ${supabaseConfigured ? "ready" : "setup"}`}><ShieldCheck size={15} /><span>{supabaseConfigured ? "Supabase credentials detected. Sign in uses email and password authentication." : "Supabase is prepared locally. Add the project URL and publishable key to activate live sign-in."}</span></div>
+        {!supabaseConfigured && <Button className="login-preview" onClick={onPreview} type="button">Open seeded preview</Button>}
+        <p className="login-privacy">Seeded English-language fixtures are isolated from live guest data.</p>
+      </form>
+    </section>
+  </main>;
+}
+
+function App() {
+  const [authReady, setAuthReady] = useState(!supabaseConfigured);
+  const [previewMode, setPreviewMode] = useState(false);
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    if (!supabase) return undefined;
+    let active = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
+      setSession(data.session);
+      setAuthReady(true);
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      if (!active) return;
+      setSession(nextSession);
+      if (nextSession) setPreviewMode(false);
+      setAuthReady(true);
+    });
+    return () => {
+      active = false;
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  const logout = async () => {
+    setPreviewMode(false);
+    setSession(null);
+    if (supabase) await supabase.auth.signOut();
+  };
+
+  if (!authReady) return <main className="login-shell login-loading"><span>Preparing secure sign-in…</span></main>;
+  if (!session && !previewMode) return <LoginPage onPreview={() => setPreviewMode(true)} />;
+
+  return <PmsWorkspace
+    account={{ name: "Abdalla Elfouly", initials: "AE", email: session?.user?.email || "abdalla.elfouly@gulfhero.local" }}
+    databaseMode={supabaseConfigured ? "configured" : "setup"}
+    onLogout={logout}
+  />;
+}
 
 export default App;

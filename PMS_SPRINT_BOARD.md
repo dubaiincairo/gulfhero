@@ -53,6 +53,10 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
 - [x] Guest and CRM: guest records, notes, Lost and Found, and temporary forms.
 - [x] Reports: legacy-style taxonomy, operational filters, preview and export
       states.
+- [x] Supabase and access foundation: local Supabase project, membership-RLS
+      schema migration, privacy-safe fixture seed, environment-aware client,
+      email/password login, Abdalla Elfouly account identity, and lower-left
+      Gulf Hero brand placement.
 - [ ] Cross-module polish: every visible tab/action has a finished desktop
       surface, no placeholder layouts, and no dead primary controls.
 - [ ] Desktop QA: 1440px and large-desktop visual review, build validation,
@@ -109,3 +113,13 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
   export states, and a source-gap boundary for Graphs and Charts. Playwright
   verified report selection, local preview/export feedback, and 1440px layout
   with no relevant console errors; build passes. Next: Cross-module polish.
+- 2026-07-13 22:00: Completed the Supabase and access foundation: RLS-scoped
+  property, room, guest, reservation, folio, and entry schema; synthetic
+  English-language SwissBlue fixture seed; environment-aware Supabase client;
+  password login; Abdalla Elfouly account identity; and lower-left Gulf Hero
+  product brand. Browser-verified the login, configuration boundary, seeded
+  preview, account menu/logout, and fixture-rich Guest Database. `npm run
+  build` passes. Local database execution is blocked because Docker is not
+  installed, and remote activation awaits a Supabase project URL and
+  publishable key. Next: connect the approved Supabase project, apply the
+  migration, provision the property membership, then run final desktop QA.
