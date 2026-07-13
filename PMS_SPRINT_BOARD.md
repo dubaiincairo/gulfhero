@@ -51,7 +51,7 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
 - [x] Housekeeping: House Status, Maintenance Block, and Work Order/Task
       workspaces with temporary forms.
 - [x] Guest and CRM: guest records, notes, Lost and Found, and temporary forms.
-- [ ] Reports: legacy-style taxonomy, operational filters, preview and export
+- [x] Reports: legacy-style taxonomy, operational filters, preview and export
       states.
 - [ ] Cross-module polish: every visible tab/action has a finished desktop
       surface, no placeholder layouts, and no dead primary controls.
@@ -104,3 +104,8 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
   found-item saves, the complete temporary note form, the Housekeeping service
   tabs, and 1440px desktop layout with no relevant console errors; build
   passes. Next: Reports.
+- 2026-07-13 22:00: Completed Reports with source-style legacy taxonomy,
+  Arrival List local filter/output controls, presentation-only preview and
+  export states, and a source-gap boundary for Graphs and Charts. Playwright
+  verified report selection, local preview/export feedback, and 1440px layout
+  with no relevant console errors; build passes. Next: Cross-module polish.
