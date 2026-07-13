@@ -73,6 +73,11 @@ Saudi hotel-group plan in `specs/002-saudi-hotel-group-release/plan.md`; the
 older `docs/` roadmap remains background product vision where it does not
 conflict with the constitution.
 
+The project uses the [AI Team Protocol](AI_TEAM_PROTOCOL.md): Sol is the single
+planner and supervisor, routing bounded visual work to Terra, product/research
+work to Luna, and complex engineering/verification to 5.5 when those roles are
+available in the orchestration environment.
+
 **Start here:**
 
 | Doc | What it covers |

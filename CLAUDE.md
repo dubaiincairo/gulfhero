@@ -69,18 +69,21 @@ Night Audit execution, or external connections.
 
 ## Working style
 
-1. Read `PMS_SPRINT_BOARD.md`, `PMS_SITEMAP_RESEARCH.md`, and the project
+1. Follow `AI_TEAM_PROTOCOL.md`. Sol owns planning, scope, final validation,
+   Git, deployment decisions, and founder communication; specialist workers
+   receive bounded task packets and return evidence only.
+2. Read `PMS_SPRINT_BOARD.md`, `PMS_SITEMAP_RESEARCH.md`, and the project
    constitution before selecting work.
-2. State the release stage, user journey, property/tenant and role context,
+3. State the release stage, user journey, property/tenant and role context,
    local-fixture or paid-release boundary, and acceptance criteria before
    substantial implementation.
-3. Keep each wave desktop-only and independently reviewable. Use browser checks
+4. Keep each wave desktop-only and independently reviewable. Use browser checks
    at 1440px or larger and run `npm run build` before completion. Resolve
    UI/UX readiness gaps before lower-priority scope.
-4. Preserve unrelated working-tree and reference assets. Stage only intended
+5. Preserve unrelated working-tree and reference assets. Stage only intended
    repository files; never stage screenshots, exports, `node_modules`, `dist`,
    browser artifacts, `.agents`, `.specify`, or `specs` unless the user
    explicitly changes that boundary.
-5. Do not deploy or alter production. A fixture-only Vercel collaboration demo
+6. Do not deploy or alter production. A fixture-only Vercel collaboration demo
    requires explicit user approval and a post-deployment smoke test. A push
    requires the user’s requested workflow and must be validated first.

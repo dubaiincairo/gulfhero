@@ -79,15 +79,17 @@ context, and configurable modules, but all prototype data stays local fixtures.
 
 ## Scheduled Run Checklist
 
-1. Read this board and the source research.
-2. Implement the first unfinished wave or the highest-impact remaining gap.
-3. Keep edits scoped; do not replace unrelated completed work.
-4. Start or reuse a local dev server, test the changed workflow with Playwright,
+1. Have Sol apply `AI_TEAM_PROTOCOL.md`: select the bounded task owner and
+   acceptance evidence before work starts.
+2. Read this board and the source research.
+3. Implement the first unfinished wave or the highest-impact remaining gap.
+4. Keep edits scoped; do not replace unrelated completed work.
+5. Start or reuse a local dev server, test the changed workflow with Playwright,
    and inspect screenshots when UI layout changes.
-5. Run `npm run build`.
-6. Commit only the intentional source changes and push the active prototype
+6. Run `npm run build`.
+7. Sol commits only the intentional source changes and pushes the active prototype
    branch to GitHub after the build and visual verification succeed.
-7. Mark the completed board item and add one concise log entry below.
+8. Mark the completed board item and add one concise log entry below.
 
 ## Run Log
 
@@ -160,3 +162,8 @@ context, and configurable modules, but all prototype data stays local fixtures.
   pass desktop/browser, build, operator-review, and smoke-test gates before it
   supports marketing the discounted early-bird subscription; this creates no
   checkout, billing, live-data, or production authorisation.
+- 2026-07-13: Adopted `AI_TEAM_PROTOCOL.md`. Sol is the sole planner,
+  supervisor, Git/deployment authority, and founder-facing decision maker;
+  Terra owns UI/UX work, Luna owns product/research/documentation work, and
+  5.5 owns complex engineering and verification when available. Every delegated
+  task now requires a bounded packet, evidence, and Sol acceptance.
