@@ -24,6 +24,8 @@ operational ground, then improves the experience through Gulf Hero UI/UX:
   property-data isolation are maintained
 - **Collaboration access:** a Vercel-hosted, fixture-only demo will let
   colleagues and leads across the Gulf try the product before production
+- **Early-bird commercial path:** discounted subscriptions may be marketed
+  during development only after the Vercel demo passes the UI/UX readiness gate
 
 ## Current prototype definition
 
@@ -42,6 +44,17 @@ A Vercel collaboration demo is permitted when explicitly approved. It must use
 fixture data only, remain separate from production, and never include live
 guest data, production credentials, or operational integrations.
 
+## UI/UX and early-bird readiness gate
+
+Clear, accurate, professional, globally competitive desktop UI/UX is Gulf
+Hero's first delivery priority. Before the discounted early-bird subscription
+is marketed, the online Vercel demo must show complete core prototype journeys,
+plain operational labels, no journey-blocking readability or layout defects,
+and no dead primary controls. It must pass 1440px desktop browser review,
+`npm run build`, operator review, and a fixture-only Vercel smoke test. This
+commercial gate does not add checkout, billing, real customer operations, or a
+production deployment.
+
 ## First paid-release scope
 
 The core operational release covers Reservations; Rates and Availability;
@@ -54,7 +67,11 @@ recommends actions for a human to approve and never acts autonomously.
 
 ## How this project is built
 
-This project is built with **AI vibe coding**: every feature is implemented step-by-step in AI coding sessions (Claude Code / Claude), following the roadmap in `docs/06-build-roadmap.md`. The docs in this repo are written to be *readable by both humans and AI* — each build step includes acceptance criteria and a ready-to-paste prompt.
+This project is built with **AI vibe coding**: every feature is implemented
+step-by-step in AI coding sessions. The current approved delivery order is the
+Saudi hotel-group plan in `specs/002-saudi-hotel-group-release/plan.md`; the
+older `docs/` roadmap remains background product vision where it does not
+conflict with the constitution.
 
 **Start here:**
 

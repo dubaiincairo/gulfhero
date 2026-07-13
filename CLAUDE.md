@@ -10,6 +10,12 @@ hospitality experience and uses eZee Absolute, Centrix, and Optimus as primary
 references for feature coverage, workflow logic, and familiar operations.
 Gulf Hero improves the UI/UX while retaining familiar staff workflows.
 
+Clear, accurate, professional, globally competitive desktop UI/UX is the first
+delivery priority. Gulf Hero may market a discounted early-bird subscription
+while development continues only after a fixture-only Vercel demo passes the
+documented UI/UX readiness gate. This does not authorise checkout, billing,
+real customer data, or production operations.
+
 The first paid market is Saudi Arabia. Target pricing is approximately
 SAR 1,000 per property per year. The first paid release is English-first,
 desktop-first, online-first, and uses SAR and Saudi VAT defaults. Arabic/RTL is
@@ -31,7 +37,8 @@ Night Audit execution, or external connections.
   scaffolding only; do not configure a live project or runtime connection.
 - **Testing:** browser-based desktop workflow checks and `npm run build`
 - **Collaboration demo:** Vercel-hosted, fixture-only demo deployments may be
-  used for colleagues and leads after explicit user approval and smoke testing.
+  used for colleagues and leads after explicit user approval, the UI/UX
+  readiness gate, and smoke testing.
 
 ## Non-negotiable product rules
 
@@ -51,6 +58,11 @@ Night Audit execution, or external connections.
   must produce a finished local state or explicit unavailable feedback. Common
   front-desk actions must be reachable within two clicks; normal work should
   feel immediate, targeting under two seconds on standard Windows Chrome PCs.
+- **Commercial UI/UX gate.** Before early-bird promotion, every core prototype
+  journey must be clear, accurate, professional, and complete at desktop size:
+  no journey-blocking readability/layout defect and no dead primary control.
+  It must pass 1440px browser review, build, operator review, and the approved
+  fixture-only Vercel smoke test.
 - **Explicit boundaries.** Booking Engine may be a desktop configuration and
   visual preview only. Marketplace, external connections, real payments,
   checkout, and Night Audit execution are out of scope.
@@ -63,7 +75,8 @@ Night Audit execution, or external connections.
    local-fixture or paid-release boundary, and acceptance criteria before
    substantial implementation.
 3. Keep each wave desktop-only and independently reviewable. Use browser checks
-   at 1440px or larger and run `npm run build` before completion.
+   at 1440px or larger and run `npm run build` before completion. Resolve
+   UI/UX readiness gaps before lower-priority scope.
 4. Preserve unrelated working-tree and reference assets. Stage only intended
    repository files; never stage screenshots, exports, `node_modules`, `dist`,
    browser artifacts, `.agents`, `.specify`, or `specs` unless the user

@@ -27,6 +27,10 @@ context, and configurable modules, but all prototype data stays local fixtures.
 - A Vercel-hosted collaboration demo is allowed only when explicitly requested:
   it must be fixture-only, smoke-tested after deployment, and separate from
   production.
+- Clear, accurate, professional desktop UI/UX is the first delivery priority.
+  Do not market the discounted early-bird subscription until all core prototype
+  journeys have no dead primary controls or journey-blocking clarity/layout
+  defects and the approved fixture-only Vercel demo passes its readiness gate.
 - Use verified SwissBlue Hotel Jeddah property data from the supplied source
   screenshots and research. Use only English client-name fixtures that have
   been explicitly approved for the prototype; do not copy live guest personal
@@ -151,3 +155,8 @@ context, and configurable modules, but all prototype data stays local fixtures.
   product direction. Demos enable Gulf-wide colleagues and leads to try the
   fixture-only desktop product; they remain non-production and require explicit
   deployment approval plus a post-deployment smoke test.
+- 2026-07-13: Elevated globally competitive, clear, accurate, professional
+  desktop UI/UX to the first delivery priority. A fixture-only Vercel demo must
+  pass desktop/browser, build, operator-review, and smoke-test gates before it
+  supports marketing the discounted early-bird subscription; this creates no
+  checkout, billing, live-data, or production authorisation.
