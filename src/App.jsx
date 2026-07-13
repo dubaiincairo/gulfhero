@@ -215,6 +215,8 @@ const reportGroups = [
 
 const reservationTabs = ["Folio Operations", "Booking Details", "Guest Details", "Room Charges", "Credit Card", "Tasks", "Audit Trail"];
 const statusOptions = ["All", "Vacant", "Occupied", "Reserved", "Blocked", "Due Out", "Dirty"];
+const roomStateCounts = { All: 76, Vacant: 29, Occupied: 43, Reserved: 3, Blocked: 1, "Due Out": 20, Dirty: 7 };
+const roomConditionOptions = ["Clean", "Dirty", "Inspected", "Maintenance"];
 
 function App() {
   const [module, setModule] = useState("dashboard");
@@ -642,10 +644,63 @@ function StayRoomGroup({ dates, expanded, group, onOpenReservation, onToggle, ra
 
 function RoomView({ onOpenReservation }) {
   const [filter, setFilter] = useState("All");
-  const filteredRooms = filter === "All" ? roomRows : roomRows.filter((room) => room.status === filter || room.condition === filter);
+  const [dateIndex, setDateIndex] = useState(0);
+  const [rooms, setRooms] = useState(roomRows);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const filteredRooms = filter === "All" ? rooms : rooms.filter((room) => room.status === filter || room.condition === filter);
+  const date = businessDates[dateIndex];
+  const dateLabel = `${date.day}/07/2026`;
+  const updateRoom = (nextRoom) => {
+    setRooms((current) => current.map((room) => room.number === nextRoom.number ? nextRoom : room));
+    setSelectedRoom(nextRoom);
+  };
+
   return (
-    <section className="room-view"><div className="room-toolbar"><Input value="09/07/2026" readOnly prefix={<CalendarDays size={15} />} />{statusOptions.map((status) => <button className={`room-filter ${filter === status ? "active" : ""}`} onClick={() => setFilter(status)} key={status}>{status}</button>)}</div><div className="room-board">{filteredRooms.map((room) => <button className={`room-card status-${room.status.toLowerCase().replace(" ", "-")}`} key={room.number} onClick={room.guest === "Available" ? undefined : onOpenReservation}><div><strong>{room.number}</strong><StatusTag value={room.status} /></div><p>{room.type}</p><b>{room.guest}</b><small><span className={`condition-dot ${room.condition.toLowerCase()}`} />{room.condition} - {room.note}</small></button>)}</div></section>
+    <section className="room-view">
+      <div className="room-toolbar room-control-toolbar">
+        <div className="room-date-control" aria-label={`Business date ${dateLabel}`}>
+          <button aria-label="Previous business date" disabled={dateIndex === 0} onClick={() => setDateIndex((index) => Math.max(0, index - 1))}><ChevronLeft size={16} /></button>
+          <span><CalendarDays size={15} />{dateLabel}</span>
+          <button aria-label="Next business date" disabled={dateIndex === businessDates.length - 1} onClick={() => setDateIndex((index) => Math.min(businessDates.length - 1, index + 1))}><ChevronRight size={16} /></button>
+        </div>
+        <div className="room-state-filters" aria-label="Room state filters">
+          {statusOptions.map((status) => <button aria-pressed={filter === status} className={`room-filter ${filter === status ? "active" : ""}`} onClick={() => setFilter(status)} key={status}><span>{status}</span><b>{roomStateCounts[status]}</b></button>)}
+        </div>
+      </div>
+      <div className="room-board">{filteredRooms.map((room) => <RoomStateCard key={room.number} onOpen={() => setSelectedRoom(room)} room={room} />)}</div>
+      {selectedRoom && <RoomDetailDrawer key={selectedRoom.number} onClose={() => setSelectedRoom(null)} onOpenReservation={onOpenReservation} onSave={updateRoom} room={selectedRoom} />}
+    </section>
   );
+}
+
+function RoomStateCard({ onOpen, room }) {
+  return <button aria-label={`Open room ${room.number} details`} className={`room-card status-${room.status.toLowerCase().replace(" ", "-")}`} onClick={onOpen}><div className="room-card-header"><strong>{room.number}</strong><StatusTag value={room.status} /></div><p>{room.type}</p><b>{room.guest}</b><small><span className={`condition-dot ${room.condition.toLowerCase()}`} />{room.condition}<i />{room.note}<ChevronRight size={14} /></small></button>;
+}
+
+function RoomDetailDrawer({ onClose, onOpenReservation, onSave, room }) {
+  const [tab, setTab] = useState("Overview");
+  const [condition, setCondition] = useState(room.condition);
+  const [note, setNote] = useState(room.note);
+  const [saved, setSaved] = useState(false);
+  const reservation = reservations.find((record) => record.room === room.number);
+  const saveRoomStatus = () => {
+    onSave({ ...room, condition, note });
+    setSaved(true);
+  };
+
+  return <Drawer className="room-detail-drawer" onClose={onClose} open placement="right" size={460} title={`Room ${room.number}`}><div className="room-detail-summary"><div><span>{room.type}</span><b>{room.guest}</b></div><StatusTag value={room.status} /></div><Tabs activeKey={tab} className="pms-tabs room-detail-tabs" items={[{ key: "Overview", label: "Overview" }, { key: "Housekeeping", label: "Housekeeping" }, { key: "Stay", label: "Stay" }]} onChange={setTab} size="small" />{tab === "Overview" ? <RoomOverview hasReservation={Boolean(reservation)} onOpenReservation={() => onOpenReservation(reservation)} onShowHousekeeping={() => setTab("Housekeeping")} room={room} /> : tab === "Housekeeping" ? <RoomHousekeeping condition={condition} note={note} onChangeCondition={setCondition} onChangeNote={setNote} onSave={saveRoomStatus} saved={saved} /> : <RoomStay hasReservation={Boolean(reservation)} onOpenReservation={() => onOpenReservation(reservation)} onShowHousekeeping={() => setTab("Housekeeping")} reservation={reservation} room={room} />}</Drawer>;
+}
+
+function RoomOverview({ hasReservation, onOpenReservation, onShowHousekeeping, room }) {
+  return <div className="room-detail-body"><div className="room-detail-facts"><p><span>Occupancy status</span><StatusTag value={room.status} /></p><p><span>Room condition</span><b>{room.condition}</b></p><p><span>Operational note</span><b>{room.note}</b></p><p><span>Business date</span><b>09/07/2026</b></p></div><div className="room-detail-callout"><Wrench size={16} /><span>Room-state actions are kept local to this desktop prototype.</span></div><div className="room-detail-actions">{hasReservation && <Button icon={<ClipboardList size={14} />} onClick={onOpenReservation}>Open stay</Button>}<Button className="primary-command" icon={<CheckCircle2 size={14} />} onClick={onShowHousekeeping}>Review housekeeping</Button></div></div>;
+}
+
+function RoomHousekeeping({ condition, note, onChangeCondition, onChangeNote, onSave, saved }) {
+  return <div className="room-detail-body"><label className="room-detail-field">Room condition<Select onChange={onChangeCondition} options={roomConditionOptions.map((value) => ({ value, label: value }))} value={condition} /></label><label className="room-detail-field">Operational note<Input onChange={(event) => onChangeNote(event.target.value)} value={note} /></label><div className="room-detail-callout"><BedDouble size={16} /><span>Saving updates only the displayed prototype state.</span></div>{saved && <div className="surface-status"><CheckCircle2 size={14} />Room status saved locally.</div>}<div className="room-detail-actions"><Button onClick={() => { onChangeCondition(roomConditionOptions[0]); onChangeNote("Ready for front desk"); }}>Mark clean</Button><Button className="primary-command" icon={<CheckCircle2 size={14} />} onClick={onSave}>{saved ? "Saved" : "Save room status"}</Button></div></div>;
+}
+
+function RoomStay({ hasReservation, onOpenReservation, onShowHousekeeping, reservation }) {
+  return <div className="room-detail-body">{hasReservation ? <><div className="room-detail-facts"><p><span>Reservation</span><b>{reservation.id}</b></p><p><span>Stay dates</span><b>{reservation.arrival} to {reservation.departure}</b></p><p><span>Reservation status</span><StatusTag value={reservation.status} /></p></div><div className="room-detail-actions"><Button className="primary-command" icon={<ClipboardList size={14} />} onClick={onOpenReservation}>Open reservation</Button></div></> : <><div className="room-empty-state"><BedDouble size={22} /><strong>Available without a local stay</strong><span>Use housekeeping to review the physical room state before a future assignment.</span></div><div className="room-detail-actions"><Button className="primary-command" icon={<Wrench size={14} />} onClick={onShowHousekeeping}>Review housekeeping</Button></div></>}</div>;
 }
 
 function RatesView() {

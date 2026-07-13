@@ -39,7 +39,8 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
 
 ## Remaining Build Waves
 
-- [ ] Room View: polish the room-state board and its detail/action surfaces.
+- [x] Room View: source-informed room-state control board, count filters,
+      local date controls, and temporary room detail/housekeeping surfaces.
 - [ ] Rates and Availability: complete all tabs, edit states, and rate detail
       drawer consistency.
 - [x] Booking Engine: Booking Engine Summary, Settings, Analytics & Tracking,
@@ -77,3 +78,7 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
   fixed the Housekeeping room-table key warning. Browser-verified navigation,
   tabs, preview drawer, local actions, 1440px layout, and clean console; build
   passes. Next: Room View polish.
+- 2026-07-13 22:00: Completed Room View polish with source-informed state
+  counters, color-coded room cards, local date navigation, and a temporary
+  room detail/housekeeping workflow. Verified at 1440px with Playwright and a
+  clean console; build passes. Next: Rates and Availability completion.
