@@ -1,47 +1,54 @@
-# CLAUDE.md — GulfHero PMS
+# CLAUDE.md — Gulf Hero PMS Prototype
 
-Guidance for AI coding sessions (Claude Code) working in this repository.
+Guidance for AI coding sessions working in this repository.
 
-## What this project is
+## Active project definition
 
-GulfHero is an AI-native hotel Property Management System (PMS) inspired by eZee Absolute but with better UI/UX, built-in AI features, and a staff-first design. All product decisions are documented in `docs/`. The build order lives in `docs/06-build-roadmap.md` — follow it unless the user says otherwise.
+Gulf Hero is a multi-tenant, browser-based SaaS product with a desktop-first
+operational interface. The active delivery is a polished PMS prototype, not a
+live hotel system. Preserve SaaS-ready property or tenant context, user roles,
+and configurable modules in the UI and fixture model.
 
-## Tech stack (fixed — do not substitute without asking)
+Build and test desktop layouts only. Do not build mobile layouts, responsive
+mobile acceptance work, or a native desktop wrapper. Use local fixtures only;
+do not add real authentication, billing, integrations, payments, checkout,
+Night Audit execution, or external connections.
 
-- **Framework:** Next.js (App Router) + TypeScript, single app in `app/`
-- **Styling/UI:** Tailwind CSS + shadcn/ui components; icons from lucide-react
-- **Database:** PostgreSQL on Supabase; schema managed with SQL migrations in `supabase/migrations/`
-- **Auth:** Supabase Auth (email/password + invite flow); roles enforced with RLS + server-side checks
-- **Data access:** Server Components / Server Actions using the Supabase server client; generated DB types in `lib/database.types.ts`
-- **AI:** Anthropic Claude API via `@anthropic-ai/sdk`; all AI calls go through `lib/ai/` (never call the API directly from components)
-- **Realtime:** Supabase Realtime for live tape chart / housekeeping updates
-- **Testing:** Vitest for unit tests (`*.test.ts` beside source), Playwright for E2E in `e2e/`
-- **Hosting:** Vercel
+## Current implementation stack
 
-## Conventions
+- **Framework:** React 19 + Vite in `src/` (JavaScript)
+- **Styling/UI:** custom CSS, Ant Design, and lucide-react
+- **Data:** local fixtures. The `supabase/` directory is future-schema design
+  scaffolding only; do not configure a live project or runtime connection.
+- **Testing:** browser-based desktop workflow checks and `npm run build`
 
-- **Multi-tenancy is sacred.** Every business table has `property_id`. Every query MUST be scoped by property. RLS policies enforce this at the DB level — never bypass with the service-role key in request handlers unless the operation is explicitly cross-property (e.g., group dashboards) and permission-checked.
-- **Money:** store as integer minor units (`amount_cents`) with a `currency` column. Never use floats for money.
-- **Dates:** hotel business dates (check-in, check-out, rate dates) are `DATE` columns in the property's timezone — not timestamps. Timestamps (`timestamptz`) only for audit/event times.
-- **Reservation state machine** lives in `lib/reservations/state.ts`. Never change a reservation status by writing the column directly from UI code — go through the transition functions so folio/housekeeping/audit side-effects fire.
-- **Server Actions** for all mutations; keep them in `app/**/actions.ts` files, validated with zod.
-- **Components:** presentational components in `components/`, feature logic co-located under `app/(dashboard)/<feature>/`.
-- **Naming:** snake_case in the database, camelCase in TypeScript, kebab-case file names.
-- **Every schema change** = a new migration file + regenerate `lib/database.types.ts` + update `docs/05-data-model.md` if the shape of a core entity changed.
+## Non-negotiable product rules
 
-## UX rules (these are product requirements, not suggestions)
-
-- The front-desk tape chart is the home screen. Common actions (check-in, check-out, new booking, assign room) must be reachable in ≤ 2 clicks from it.
-- Every list screen needs: search, empty state, loading skeleton, and keyboard navigation.
-- Destructive actions (cancel reservation, void charge) always confirm and always write to `audit_log`.
-- All screens must work at 1280px (front-desk PC) and 390px (phone) widths.
-- Support English and Arabic (RTL). Use the i18n dictionary in `lib/i18n/`; never hard-code user-facing strings once Phase 0 step 0.6 is done.
+- **Multi-tenancy stays visible.** Model and display property/tenant context,
+  user-role context, and configurable-module context. For future schemas, use
+  `property_id` and property-scoped access patterns; do not implement live RLS
+  or authentication in this prototype.
+- **Verified data only.** Use verified SwissBlue Hotel Jeddah property and room
+  facts. English client-name fixtures are allowed only with explicit approval.
+  Never copy live guest personal data.
+- **Desktop fidelity.** Use the source-informed eZee/iPMS operational language
+  without copying its design. Every primary control must produce a finished
+  local state or explicit unavailable feedback.
+- **Explicit boundaries.** Booking Engine may be a desktop configuration and
+  visual preview only. Marketplace, external connections, real payments,
+  checkout, and Night Audit execution are out of scope.
 
 ## Working style
 
-- Before building a feature, read: its roadmap step in `docs/06-build-roadmap.md`, the same step number in `docs/10-technical-execution-plan.md` (exact migrations/files/tests — follow the reserved migration numbering), the screen spec in `docs/09-screen-specs.md`, and the module spec in `docs/03-feature-specs.md` (`docs/07-ai-features.md` for AI features).
-- **eZee Absolute parity is a baseline requirement.** `docs/11-ezee-absolute-page-map.md` maps every eZee screen/operation to its GulfHero home; when building a module, check its section there (plus the Parity additions list in docs/03) so no capability is missed. Parity = same pages, workflows, and capabilities — never a visual clone of eZee's design or copy.
-- After completing a roadmap step, tick its checkbox in `docs/06-build-roadmap.md` in the same commit.
-- Run `npm run lint && npm run typecheck && npm test` before committing; fix what you broke.
-- Prefer small, complete vertical slices (DB → server action → UI → test) over broad scaffolding.
-- Seed data lives in `supabase/seed.sql` — keep the demo hotel ("GulfHero Demo Hotel", 24 rooms, 4 room types) working as features are added, so every session can see the app in a realistic state.
+1. Read `PMS_SPRINT_BOARD.md`, `PMS_SITEMAP_RESEARCH.md`, and the project
+   constitution before selecting work.
+2. State the user journey, property/tenant and role context, local-fixture
+   boundary, and acceptance criteria before substantial implementation.
+3. Keep each wave desktop-only and independently reviewable. Use browser checks
+   at 1440px or larger and run `npm run build` before completion.
+4. Preserve unrelated working-tree and reference assets. Stage only intended
+   repository files; never stage screenshots, exports, `node_modules`, `dist`,
+   browser artifacts, `.agents`, `.specify`, or `specs` unless the user
+   explicitly changes that boundary.
+5. Do not deploy or alter production. A push requires the user’s requested
+   workflow and must be validated first.

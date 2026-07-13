@@ -2,11 +2,27 @@
 
 **A modern, AI-native Property Management System for hotels — built to beat eZee Absolute on UI/UX, intelligence, and staff-friendliness.**
 
-GulfHero is a cloud PMS for independent hotels, boutique properties, and small chains. It covers the same ground as eZee Absolute (reservations, front desk, housekeeping, billing, booking engine, distribution) but is designed from day one to be:
+GulfHero is a multi-tenant, browser-based SaaS PMS for independent hotels,
+boutique properties, and small chains. It covers the same ground as eZee
+Absolute (reservations, front desk, housekeeping, billing, booking engine,
+distribution) but is designed from day one to be:
 
 1. **Beautiful and fast to use** — a clean, modern interface where the most common front-desk actions take one or two clicks, not a hunt through crowded menus.
 2. **Smart** — AI is woven into the core: an AI front-desk copilot, dynamic pricing suggestions, AI guest messaging, natural-language reports, and predictive housekeeping.
 3. **Staff-first** — built around real hotel shifts (morning check-outs, evening check-ins, night audit), with role-based screens so a receptionist, housekeeper, and manager each see exactly what they need.
+
+## Current prototype definition
+
+The active deliverable is a **desktop-only browser prototype**. It demonstrates
+SaaS-ready property/tenant context, user roles, and configurable modules using
+local fixtures. It does not build or test mobile layouts, responsive mobile
+behavior, or a native desktop wrapper.
+
+The following are intentionally deferred: real authentication, billing,
+integrations, payments, checkout, Night Audit execution, and all external
+connections. The prototype uses verified SwissBlue Hotel Jeddah property and
+room facts plus explicitly approved English-language fixture clients; it never
+uses live guest personal data.
 
 ## How this project is built
 
@@ -28,7 +44,10 @@ This project is built with **AI vibe coding**: every feature is implemented step
 | [`docs/10-technical-execution-plan.md`](docs/10-technical-execution-plan.md) | Exact engineering steps per roadmap item: migrations, files, functions, tests |
 | [`docs/11-ezee-absolute-page-map.md`](docs/11-ezee-absolute-page-map.md) | Screen-by-screen map of eZee Absolute (from its official manuals) → GulfHero parity reference |
 
-## Current status
+## Product vision status
+
+The phases below describe the longer-term SaaS product vision. They are not
+authorization to add live services to the current desktop-fixture prototype.
 
 - ✅ Phase P — Planning (this documentation)
 - ⬜ Phase 0 — Foundation: project scaffold, auth, multi-tenancy, design system
@@ -40,7 +59,12 @@ This project is built with **AI vibe coding**: every feature is implemented step
 
 ## Quick start for a new AI coding session
 
-1. Read `CLAUDE.md` (repo conventions and stack).
-2. Open `docs/06-build-roadmap.md`, find the first unchecked step.
-3. Read the same step number in `docs/10-technical-execution-plan.md` (exact files/migrations/tests) and the relevant screen spec in `docs/09-screen-specs.md`.
-4. Use the step's prompt, build it, meet the acceptance criteria, check the box, commit.
+1. Read `CLAUDE.md`, `.specify/memory/constitution.md`, and
+   `PMS_SPRINT_BOARD.md` for the active prototype guardrails.
+2. Read `PMS_SITEMAP_RESEARCH.md` before making source-sensitive UI changes.
+3. Define the desktop journey, property/tenant and role context, fixture
+   boundary, and acceptance criteria before implementing.
+4. Use the long-term `docs/` roadmap only as product vision unless the user
+   explicitly places a live-service phase in scope.
+5. Build the desktop slice, validate it at a large desktop viewport, run
+   `npm run build`, then update the sprint board.

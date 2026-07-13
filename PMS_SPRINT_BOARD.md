@@ -5,10 +5,18 @@
 Deliver a desktop-only, visually faithful PMS prototype ready for publication.
 The prototype must use polished mock data, working navigation, tabs, filters,
 drawers, and temporary modal workflows. It is not a live transactional PMS.
+Gulf Hero remains SaaS-ready in its visible property/tenant context, user-role
+context, and configurable modules, but all prototype data stays local fixtures.
 
 ## Scope Rules
 
 - Preserve the source-informed eZee/iPMS desktop visual language.
+- Build and test browser-based desktop layouts only. Do not add mobile layouts,
+  responsive mobile work, or a native desktop wrapper.
+- Preserve property/tenant context, user roles, and configurable-module concepts
+  in every wave, using local fixtures only.
+- Do not add real authentication, billing, integrations, payments, checkout,
+  Night Audit execution, or external connections.
 - Build the Booking Engine configuration module as a visual desktop prototype,
   but do not connect it to a live booking endpoint or payment system.
 - Do not build Marketplace, integrations, real payments, checkout, Night Audit
@@ -120,6 +128,12 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
   product brand. Browser-verified the login, configuration boundary, seeded
   preview, account menu/logout, and fixture-rich Guest Database. `npm run
   build` passes. Local database execution is blocked because Docker is not
-  installed, and remote activation awaits a Supabase project URL and
-  publishable key. Next: connect the approved Supabase project, apply the
-  migration, provision the property membership, then run final desktop QA.
+  installed. Supabase artifacts are now design scaffolding only under the
+  current fixture-only definition; do not connect a remote project. Next:
+  final desktop QA of local prototype journeys.
+- 2026-07-13 22:00: Amended the active project definition: Gulf Hero is a
+  multi-tenant, browser-based SaaS concept with desktop-first operational UI.
+  Prototype work now preserves property/tenant, role, and configurable-module
+  concepts through local fixtures only; mobile/native, real authentication,
+  billing, payments, integrations, and external connections are explicitly
+  deferred. This boundary governs future planning and implementation.
