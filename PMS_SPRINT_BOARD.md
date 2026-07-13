@@ -75,7 +75,7 @@ context, and configurable modules, but all prototype data stays local fixtures.
       schema migration, privacy-safe fixture seed, environment-aware client,
       email/password login, Abdalla Elfouly account identity, and lower-left
       Gulf Hero brand placement.
-- [ ] Cross-module polish: every visible tab/action has a finished desktop
+- [x] Cross-module polish: every visible tab/action has a finished desktop
       surface, no placeholder layouts, and no dead primary controls.
 - [ ] Desktop QA: 1440px and large-desktop visual review, build validation,
       then an explicit deployment decision.
@@ -182,3 +182,10 @@ context, and configurable modules, but all prototype data stays local fixtures.
   wave: multi-room rate/VAT totals, unassigned-room handling, coherent detail,
   and room-type availability updates. Playwright visual workflow checks and
   build pass. Next: cross-module polish and final desktop QA.
+- 2026-07-13 20:00: Completed cross-module desktop polish: clarified the
+  fixture-only access boundary, strengthened Reservations status/search flow,
+  and tightened Stay View into a source-informed room-type matrix with mapped
+  inventory context. Playwright verified local workspace entry, Stay View
+  filtering, reservation filtering, and the visual-only Booking Engine preview
+  (no checkout or payment controls) at 1440px and 1680px; build passes. Next:
+  an explicit deployment decision.

@@ -31,13 +31,16 @@ import {
   Eye,
   FileText,
   Grid3X3,
+  Globe2,
   Info,
   KeyRound,
+  Landmark,
   LogOut,
   Mail,
   Megaphone,
   Menu,
   MoreVertical,
+  Network,
   Plus,
   RefreshCw,
   Save,
@@ -62,7 +65,7 @@ import {
   ReportsView as ReportsSurface
 } from "./operationalViews";
 import { PmsDatePicker, PmsDateRangePicker } from "./PmsDatePicker";
-import { marketReservations } from "./marketFixtures";
+import { marketReservations, marketRoomInventory } from "./marketFixtures";
 import { supabase, supabaseConfigured } from "./lib/supabase";
 
 const businessDates = [
@@ -100,13 +103,13 @@ const navigation = [
 
 const roomTypes = [
   { name: "Superior King Room", rooms: 10, base: "1/0", max: "2/1", rate: 575, inventory: [5, 7, 8, 8, 8, 9, 9, 9, 9, 9] },
-  { name: "Superior Twin Room", rooms: 8, base: "1/0", max: "2/1", rate: 575, inventory: [4, 6, 6, 7, 6, 7, 8, 8, 8, 8] },
+  { name: "Superior Twin Room", rooms: 6, base: "1/0", max: "2/1", rate: 575, inventory: [4, 6, 6, 6, 6, 6, 6, 6, 6, 6] },
   { name: "Deluxe King Room City View", rooms: 6, base: "1/0", max: "4/4", rate: 690, inventory: [3, 4, 5, 5, 5, 6, 6, 6, 6, 6] },
-  { name: "Junior Suite", rooms: 4, base: "1/0", max: "2/2", rate: 790, inventory: [2, 3, 3, 3, 4, 4, 4, 4, 4, 4] },
-  { name: "Deluxe Junior Suite King Bed", rooms: 4, base: "1/0", max: "3/1", rate: 860, inventory: [2, 2, 3, 3, 3, 4, 4, 4, 4, 4] },
-  { name: "Deluxe Junior Suite Twin", rooms: 4, base: "1/0", max: "3/1", rate: 860, inventory: [1, 2, 3, 3, 3, 4, 4, 4, 4, 4] },
-  { name: "Executive Suite", rooms: 3, base: "1/0", max: "6/2", rate: 980, inventory: [1, 2, 2, 3, 3, 3, 3, 3, 3, 3] },
-  { name: "Presidential Suite City View", rooms: 2, base: "1/0", max: "4/4", rate: 1650, inventory: [1, 1, 2, 2, 2, 2, 2, 2, 2, 2] },
+  { name: "Junior Suite", rooms: 5, base: "1/0", max: "2/2", rate: 790, inventory: [2, 3, 4, 4, 5, 5, 5, 5, 5, 5] },
+  { name: "Deluxe Junior Suite King Bed", rooms: 23, base: "1/0", max: "3/1", rate: 860, inventory: [17, 18, 19, 20, 20, 21, 22, 22, 23, 23] },
+  { name: "Deluxe Junior Suite Twin", rooms: 11, base: "1/0", max: "3/1", rate: 860, inventory: [7, 8, 9, 9, 10, 10, 11, 11, 11, 11] },
+  { name: "Executive Suite", rooms: 6, base: "1/0", max: "6/2", rate: 980, inventory: [3, 4, 4, 5, 5, 5, 6, 6, 6, 6] },
+  { name: "Presidential Suite City View", rooms: 6, base: "1/0", max: "4/4", rate: 1650, inventory: [3, 4, 4, 5, 5, 5, 6, 6, 6, 6] },
   { name: "Meeting Room", rooms: 1, base: "1/0", max: "2/0", rate: 950, inventory: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1] },
   { name: "Paymaster", rooms: 1, base: "1/0", max: "4/2", rate: 0, inventory: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1] }
 ];
@@ -130,34 +133,35 @@ function roomCondition(record) {
   return "Clean";
 }
 
-const stayRoomGroups = [...new Set(reservations.map((record) => record.roomType))].map((roomType) => {
-  const uniqueRooms = new Map();
-  reservations
-    .filter((record) => record.roomType === roomType && Date.parse(record.departureISO) > stayWindowStart && Date.parse(record.arrivalISO) < stayWindowEnd)
-    .forEach((record) => {
-      if (!uniqueRooms.has(record.room)) uniqueRooms.set(record.room, record);
+const stayRoomGroups = [...new Set(marketRoomInventory.map((record) => record.roomType))].map((roomType) => {
+  const inventoryRooms = marketRoomInventory.filter((record) => record.roomType === roomType);
+  const rooms = inventoryRooms.map((inventoryRoom) => {
+    const roomReservations = reservations.filter((record) => record.room === inventoryRoom.number && Date.parse(record.departureISO) >= stayWindowStart && Date.parse(record.arrivalISO) < stayWindowEnd);
+    const activeReservations = roomReservations.filter((record) => record.arrivalISO <= "2026-07-09" && record.departureISO >= "2026-07-09");
+    const currentReservation = activeReservations.find((record) => record.status === "Due out") || activeReservations.find((record) => record.status === "In house") || activeReservations[0];
+    const isMaintenanceBlock = inventoryRoom.number === "610" && !currentReservation;
+    const status = isMaintenanceBlock ? "Blocked" : currentReservation ? statusToRoomState[currentReservation.status] || "Reserved" : roomReservations.length ? "Reserved" : "Vacant";
+    const condition = isMaintenanceBlock ? "Maintenance" : currentReservation ? roomCondition(currentReservation) : Number(inventoryRoom.number) % 17 === 0 ? "Dirty" : Number(inventoryRoom.number) % 11 === 0 ? "Inspected" : "Clean";
+    const bookings = roomReservations.map((record) => {
+      const rawStart = Math.round((Date.parse(`${record.arrivalISO}T00:00:00Z`) - stayWindowStart) / dayMs);
+      const clippedStart = Math.max(rawStart, 0);
+      const consumedNights = Math.max(-rawStart, 0);
+      const visibleNights = Math.max(1, Math.min(record.nights - consumedNights, 12 - clippedStart));
+      return { start: clippedStart, length: visibleNights, label: record.guest, status: record.status, tone: statusToTone[record.status] || "confirmed", reservation: record };
     });
-  const rooms = [...uniqueRooms.values()].slice(0, 7).map((record) => {
-    const rawStart = Math.round((Date.parse(`${record.arrivalISO}T00:00:00Z`) - stayWindowStart) / dayMs);
-    const clippedStart = Math.max(rawStart, 0);
-    const consumedNights = Math.max(-rawStart, 0);
-    const visibleNights = Math.max(1, Math.min(record.nights - consumedNights, 12 - clippedStart));
-    return {
-      number: record.room,
-      condition: roomCondition(record),
-      status: statusToRoomState[record.status] || "Reserved",
-      bookings: [{ start: clippedStart, length: visibleNights, label: record.guest, status: record.status, tone: statusToTone[record.status] || "confirmed", reservation: record }]
-    };
+    if (isMaintenanceBlock) bookings.push({ start: 0, length: 2, label: "Engineering inspection", status: "Maintenance", tone: "blocked", reservation: null });
+    return { number: inventoryRoom.number, condition, status, bookings };
   });
   const definition = roomTypes.find((item) => item.name === roomType);
-  const inventory = definition?.rooms || Math.max(rooms.length, 4);
+  const inventory = inventoryRooms.length;
   const availability = stayDates.map((date) => {
     const iso = `2026-07-${date.day}`;
-    const occupied = reservations.filter((record) => record.roomType === roomType && record.arrivalISO <= iso && record.departureISO > iso).length;
-    return Math.max(inventory - occupied, 0);
+    const occupied = new Set(reservations.filter((record) => record.roomType === roomType && record.arrivalISO <= iso && record.departureISO > iso).map((record) => record.room)).size;
+    const maintenance = roomType === "Superior Twin Room" && ["09", "10"].includes(date.day) ? 1 : 0;
+    return Math.max(inventory - occupied - maintenance, 0);
   });
   return { name: roomType, rooms, availability, rate: definition?.rate || 860 };
-}).filter((group) => group.rooms.length);
+}).filter((group) => group.rooms.length).sort((a, b) => roomTypes.findIndex((item) => item.name === a.name) - roomTypes.findIndex((item) => item.name === b.name));
 
 const roomRows = [...reservations
   .filter((record) => ["In house", "Arriving", "Due out", "Confirmed"].includes(record.status))
@@ -212,6 +216,8 @@ const reportGroups = [
 
 const reservationTabs = ["Folio Operations", "Booking Details", "Guest Details", "Room Charges", "Credit Card", "Tasks", "Audit Trail"];
 const statusOptions = ["All", "Vacant", "Occupied", "Reserved", "Blocked", "Due Out", "Dirty"];
+const stayRooms = stayRoomGroups.flatMap((group) => group.rooms);
+const stayRoomStateCounts = Object.fromEntries(statusOptions.map((status) => [status, status === "All" ? stayRooms.length : status === "Dirty" ? stayRooms.filter((room) => room.condition === "Dirty").length : stayRooms.filter((room) => room.status === status).length]));
 const occupiedRoomCount = roomRows.filter((room) => room.status === "Occupied").length;
 const reservedRoomCount = roomRows.filter((room) => room.status === "Reserved").length;
 const dueOutRoomCount = roomRows.filter((room) => room.status === "Due Out").length;
@@ -663,17 +669,15 @@ function Dashboard({ onOpenReservation, onNavigate, reservations }) {
 }
 
 function ReservationsView({ onOpenReservation, onSearch, reservations }) {
-  const [tab, setTab] = useState("Reservations");
+  const [activeFilter, setActiveFilter] = useState("All");
   const [mode, setMode] = useState("cards");
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
   const [notice, setNotice] = useState("");
   const visibleRows = useMemo(() => reservations.filter((record) => {
-    const tabMatches = tab === "Reservations" || (tab === "Arrivals" && record.status === "Arriving") || (tab === "Departures" && record.status === "Due out") || (tab === "In-house" && record.status === "In house");
-    const statusMatches = statusFilter === "All" || record.status === statusFilter;
+    const statusMatches = activeFilter === "All" || record.status === activeFilter;
     const queryMatches = `${record.guest} ${record.id} ${record.room}`.toLowerCase().includes(query.toLowerCase());
-    return tabMatches && statusMatches && queryMatches;
-  }), [query, statusFilter, tab]);
+    return statusMatches && queryMatches;
+  }), [activeFilter, query, reservations]);
   const columns = [
     { title: "Guest Name", dataIndex: "guest", render: (name, record) => <button className="table-link" onClick={() => onOpenReservation(record)}>{name}</button> },
     { title: "Res. No.", dataIndex: "id", width: 105 },
@@ -684,14 +688,14 @@ function ReservationsView({ onOpenReservation, onSearch, reservations }) {
     { title: "Status", dataIndex: "status", width: 105, render: (status) => <StatusTag value={status} /> },
     { title: "Balance", dataIndex: "balance", width: 105, render: (balance) => `SAR ${balance}` }
   ];
-  const tabs = [["Reservations", reservations.length], ["Arrivals", reservations.filter((record) => record.status === "Arriving").length], ["Departures", reservations.filter((record) => record.status === "Due out").length], ["In-house", reservations.filter((record) => record.status === "In house").length]];
+  const filters = [["All", "All reservations", reservations.length], ["Arriving", "Arriving", reservations.filter((record) => record.status === "Arriving").length], ["Confirmed", "Confirmed", reservations.filter((record) => record.status === "Confirmed").length], ["In house", "In house", reservations.filter((record) => record.status === "In house").length], ["Due out", "Due out", reservations.filter((record) => record.status === "Due out").length]];
   return (
     <section className="reservations-view">
-      <div className="view-tabs-toolbar">
-        <Tabs activeKey={tab} className="pms-tabs" items={tabs.map(([label, count]) => ({ key: label, label: <span>{label}<b>{count}</b></span> }))} onChange={(nextTab) => { setTab(nextTab); setStatusFilter("All"); }} size="small" />
-        <div className="toolbar-actions"><button className={`view-toggle ${mode === "cards" ? "active" : ""}`} onClick={() => setMode("cards")} aria-label="Card view"><Grid3X3 size={16} /></button><button className={`view-toggle ${mode === "table" ? "active" : ""}`} onClick={() => setMode("table")} aria-label="List view"><ClipboardList size={16} /></button><Button icon={<Users size={14} />} onClick={() => setNotice("Selected reservations are ready to be grouped.")} size="small">Make Group</Button><Button icon={<Settings size={14} />} onClick={() => setNotice("Column settings are available in the table view.")} size="small">Manage Columns</Button><Button icon={<Download size={14} />} onClick={() => setNotice(`${visibleRows.length} visible reservations prepared for export.`)} size="small">Export</Button><Button icon={<Search size={14} />} onClick={onSearch} size="small">Search</Button></div>
+      <div className="view-tabs-toolbar reservation-primary-toolbar">
+        <Tabs activeKey={activeFilter} aria-label="Reservation status" className="pms-tabs reservation-status-tabs" items={filters.map(([key, label, count]) => ({ key, label: <span>{label}<b>{count}</b></span> }))} onChange={setActiveFilter} size="small" />
+        <div className="toolbar-actions"><button className={`view-toggle ${mode === "cards" ? "active" : ""}`} onClick={() => setMode("cards")} aria-label="Card view"><Grid3X3 size={16} /></button><button className={`view-toggle ${mode === "table" ? "active" : ""}`} onClick={() => setMode("table")} aria-label="List view"><ClipboardList size={16} /></button><Button icon={<Users size={14} />} onClick={() => setNotice("Selected reservations are ready to be grouped.")} size="small">Make Group</Button><Button icon={<Settings size={14} />} onClick={() => setNotice("Column settings are available in the table view.")} size="small">Manage Columns</Button><Button icon={<Download size={14} />} onClick={() => setNotice(`${visibleRows.length} visible reservations prepared for export.`)} size="small">Export</Button></div>
       </div>
-      <div className="context-toolbar"><div className="status-filters">{["All", "Arriving", "Confirmed", "In house", "Due out"].map((filter) => <button className={statusFilter === filter ? "selected" : ""} onClick={() => setStatusFilter(filter)} key={filter}>{filter}</button>)}</div><Input allowClear onChange={(event) => setQuery(event.target.value)} placeholder="Search reservation, guest or room" prefix={<Search size={15} />} value={query} /></div>
+      <div className="reservation-query-toolbar"><Input allowClear aria-label="Filter visible reservations" onChange={(event) => setQuery(event.target.value)} placeholder="Search visible reservations by guest, number or room" prefix={<Search size={15} />} value={query} /><span><b>{visibleRows.length}</b> {visibleRows.length === 1 ? "result" : "results"} in {filters.find(([key]) => key === activeFilter)?.[1].toLowerCase()}</span><Button icon={<SlidersHorizontal size={14} />} onClick={onSearch} size="small">Advanced search</Button></div>
       {mode === "cards" ? <div className="reservation-cards">{visibleRows.map((record) => <ReservationCard key={record.id} reservation={record} onClick={() => onOpenReservation(record)} />)}</div> : <div className="table-frame"><Table className="pms-table" columns={columns} dataSource={visibleRows} pagination={false} size="small" /></div>}
       {notice && <div className="surface-status"><CheckCircle2 size={14} />{notice}</div>}
     </section>
@@ -716,8 +720,13 @@ function ReservationCard({ reservation, onClick }) {
 function StayView({ dates, onAssignRoom, onOpenReservation, reservations }) {
   const [activeStatus, setActiveStatus] = useState("All");
   const [ratePlan, setRatePlan] = useState("Room Only Flexible");
-  const [expandedGroups, setExpandedGroups] = useState(() => new Set(stayRoomGroups.map((group) => group.name)));
-  const visibleGroups = stayRoomGroups.map((group) => ({ ...group, rooms: activeStatus === "All" ? group.rooms : group.rooms.filter((room) => room.status === activeStatus) })).filter((group) => group.rooms.length);
+  const [expandedGroups, setExpandedGroups] = useState(() => new Set([stayRoomGroups[0]?.name]));
+  const visibleGroups = stayRoomGroups.map((group) => ({ ...group, rooms: activeStatus === "All" ? group.rooms : group.rooms.filter((room) => room.status === activeStatus || room.condition === activeStatus) })).filter((group) => group.rooms.length);
+  const selectStatus = (status) => {
+    setActiveStatus(status);
+    const matches = stayRoomGroups.filter((group) => status === "All" || group.rooms.some((room) => room.status === status || room.condition === status));
+    setExpandedGroups(new Set(status === "All" ? matches.slice(0, 1).map((group) => group.name) : matches.map((group) => group.name)));
+  };
   const toggleGroup = (groupName) => setExpandedGroups((current) => {
     const next = new Set(current);
     if (next.has(groupName)) next.delete(groupName);
@@ -727,8 +736,8 @@ function StayView({ dates, onAssignRoom, onOpenReservation, reservations }) {
 
   return (
     <section className="stay-view">
-      <div className="stay-toolbar"><PmsDatePicker aria-label="Stay View business date" defaultValue="09/07/2026" size="small" /><div className="status-pills">{statusOptions.map((status, index) => <button className={activeStatus === status ? "active" : ""} onClick={() => setActiveStatus(status)} key={status}>{status}<b>{[76, 49, 18, 5, 2, 5, 5][index]}</b></button>)}</div><Select onChange={setRatePlan} options={ratePlanOptions.slice(1)} size="small" value={ratePlan} /><Button icon={<BedDouble size={14} />} onClick={onAssignRoom} size="small">Assign Room</Button></div>
-      <div className="stay-grid-frame"><div className="stay-grid" style={{ "--stay-columns": dates.length }}><div className="stay-row stay-dates"><div className="stay-room-label"><ChevronLeft size={16} /><PmsDatePicker aria-label="Stay grid start date" defaultValue="09/07/2026" size="small" /><ChevronRight size={16} /></div>{dates.map((date) => <div className="stay-date" key={date.day}><span>{date.dow}</span><b>{date.day}</b><small>{date.month}</small></div>)}</div>{visibleGroups.map((group) => <StayRoomGroup dates={dates} expanded={expandedGroups.has(group.name)} group={{ ...group, availability: group.availability.map((count, index) => Math.max(0, count - localInventoryImpact(reservations, group.name, dates[index]))) }} key={group.name} onOpenReservation={onOpenReservation} onToggle={toggleGroup} ratePlan={ratePlan} />)}<div className="stay-row stay-summary"><div className="stay-room-label">Available Inventory <Info size={13} /></div>{dates.map((date) => <div key={date.day}>{date.available}</div>)}</div><div className="stay-row stay-summary occupancy"><div className="stay-room-label">Occupancy %</div>{dates.map((date) => <div key={date.day}>{Math.round((date.sold / 76) * 100)}%</div>)}</div></div></div>
+      <div className="stay-toolbar"><div className="stay-date-control"><PmsDatePicker aria-label="Stay View business date" defaultValue="09/07/2026" size="small" /><span><b>{marketRoomInventory.length}</b> mapped rooms · <b>{76 - marketRoomInventory.length}</b> awaiting mapping</span></div><div className="status-pills" aria-label="Stay View room filters">{statusOptions.map((status) => <button aria-pressed={activeStatus === status} className={activeStatus === status ? "active" : ""} onClick={() => selectStatus(status)} key={status}>{status}<b>{stayRoomStateCounts[status]}</b></button>)}</div><Select aria-label="Stay View rate plan" onChange={setRatePlan} options={ratePlanOptions.slice(1)} size="small" value={ratePlan} /><Button icon={<BedDouble size={14} />} onClick={onAssignRoom} size="small">Assign Room</Button></div>
+      <div className="stay-grid-frame"><div className="stay-grid" style={{ "--stay-columns": dates.length }}><div className="stay-row stay-dates"><div className="stay-room-label"><ChevronLeft size={16} /><PmsDatePicker aria-label="Stay grid start date" defaultValue="09/07/2026" size="small" /><ChevronRight size={16} /></div>{dates.map((date, index) => <div className={`stay-date ${index === 0 ? "today" : ""}`} key={date.day}><span>{date.dow}</span><b>{date.day}</b><small>{date.month}</small></div>)}</div>{visibleGroups.length ? visibleGroups.map((group) => <StayRoomGroup dates={dates} expanded={expandedGroups.has(group.name)} group={{ ...group, availability: group.availability.map((count, index) => Math.max(0, count - localInventoryImpact(reservations, group.name, dates[index]))) }} key={group.name} onOpenReservation={onOpenReservation} onToggle={toggleGroup} ratePlan={ratePlan} />) : <div className="stay-empty"><Search size={20} /><b>No rooms match this filter</b><span>Choose another room state to return to the occupancy board.</span></div>}<div className="stay-row stay-summary"><div className="stay-room-label">Available Inventory <Info size={13} /></div>{dates.map((date, index) => <div className={index === 0 ? "today" : ""} key={date.day}>{date.available}</div>)}</div><div className="stay-row stay-summary occupancy"><div className="stay-room-label">Occupancy %</div>{dates.map((date, index) => <div className={index === 0 ? "today" : ""} key={date.day}>{Math.round((date.sold / 76) * 100)}%</div>)}</div></div></div>
       {reservations.some((record) => record.localOnly && record.room === "Unassigned") && <div className="surface-status"><CheckCircle2 size={14} />Local reservations are held against room-type availability until a room is assigned.</div>}
       <div className="stay-legend"><span><i className="booking-confirmed" /> Confirmed</span><span><i className="booking-occupied" /> Checked in</span><span><i className="booking-dueout" /> Due out</span><span><i className="booking-blocked" /> Maintenance block</span></div>
     </section>
@@ -737,7 +746,7 @@ function StayView({ dates, onAssignRoom, onOpenReservation, reservations }) {
 
 function StayRoomGroup({ dates, expanded, group, onOpenReservation, onToggle, ratePlan }) {
   const rate = ratePlan === "Room Only Non-Refundable" ? Math.round(group.rate * 0.88) : group.rate;
-  return <>{<div className="stay-row room-group-line"><button aria-expanded={expanded} className="stay-room-label stay-group-toggle" onClick={() => onToggle(group.name)}><ChevronDown className={expanded ? "expanded" : ""} size={15} /><span><b>{group.name}</b><small>{group.rooms.length} rooms</small></span></button>{dates.map((date, index) => <div className="stay-group-summary-cell" key={date.day}><b>{group.availability[index]}</b><small>SAR {rate}</small></div>)}</div>}{expanded && group.rooms.map((room) => <div className="stay-row room-line" key={room.number}><div className="stay-room-label"><b>{room.number}</b><span>{room.condition}</span><small>{room.status}</small></div>{dates.map((date) => <div className="stay-cell" key={`${room.number}-${date.day}`} />)}{room.bookings.map((booking) => <button aria-label={`${booking.label}, ${booking.status}`} className={`booking-strip ${booking.tone}`} disabled={!booking.reservation} key={`${room.number}-${booking.label}`} onClick={() => onOpenReservation(booking.reservation)} style={{ gridColumn: `${booking.start + 2} / span ${booking.length}` }}><span>{booking.label}</span><small>{booking.status}</small></button>)}</div>)}</>;
+  return <>{<div className="stay-row room-group-line"><button aria-expanded={expanded} className="stay-room-label stay-group-toggle" onClick={() => onToggle(group.name)} type="button"><ChevronDown className={expanded ? "expanded" : ""} size={15} /><span><b>{group.name}</b><small>{group.rooms.length} mapped rooms</small></span></button>{dates.map((date, index) => <div className={`stay-group-summary-cell ${index === 0 ? "today" : ""}`} key={date.day}><b>{group.availability[index]}</b><small>SAR {rate}</small></div>)}</div>}{expanded && group.rooms.map((room) => <div className="stay-row room-line" key={room.number}><div className="stay-room-label"><b>{room.number}</b><span className={`stay-condition ${room.condition.toLowerCase()}`}>{room.condition}</span><small>{room.status}</small></div>{dates.map((date, index) => <div className={`stay-cell ${index === 0 ? "today" : ""}`} key={`${room.number}-${date.day}`} />)}{room.bookings.map((booking, bookingIndex) => <button aria-label={`${booking.label}, ${booking.status}`} className={`booking-strip ${booking.tone}`} disabled={!booking.reservation} key={`${room.number}-${booking.label}-${bookingIndex}`} onClick={(event) => { event.stopPropagation(); if (booking.reservation) onOpenReservation(booking.reservation); }} style={{ gridColumn: `${booking.start + 2} / span ${booking.length}` }} type="button"><span>{booking.label}</span><small>{booking.status}</small></button>)}</div>)}</>;
 }
 
 function RoomView({ onOpenReservation, reservations }) {
@@ -1070,7 +1079,7 @@ function AddReservationDrawer({ open, onClose, onReserve }) {
 function CircleHelpIcon() { return <Info size={14} />; }
 function ReservationSearchDrawer({ open, onClose, onOpenReservation, reservations }) {
   const selectOptions = [{ value: "-Select-", label: "-Select-" }, { value: "Direct", label: "Direct" }, { value: "Corporate", label: "Corporate" }];
-  return <Drawer className="reservation-search-drawer" onClose={onClose} open={open} placement="right" title="Search" size={440}><div className="drawer-form"><label className="drawer-filter-toggle"><Checkbox defaultChecked /> Reservation Date</label><PmsDateRangePicker aria-label="Reservation date range" defaultValue={["09/07/2026", "09/07/2026"]} /><label className="drawer-filter-toggle"><Checkbox /> Arrival</label><PmsDateRangePicker aria-label="Arrival date range" disabled placeholder={["Start date", "End date"]} /><label>Business Source<Select defaultValue="-Select-" options={selectOptions} /></label><label>Travel Agent<Select defaultValue="-Select-" options={selectOptions} /></label><label>Company<Select defaultValue="-Select-" options={selectOptions} /></label><label>Room Type<Select defaultValue="-Select-" options={selectOptions} /></label><div className="reservation-search-pair"><label>Status<Select defaultValue="Active" options={[{ value: "Active", label: "Active" }, { value: "Cancelled", label: "Cancelled" }]} /></label><label>Res. Type<Select defaultValue="-Select-" options={selectOptions} /></label></div><div className="reservation-search-checks"><Checkbox>Show Unassigned Rooms</Checkbox><Checkbox>Without Deposit</Checkbox><Checkbox>CC Authorized</Checkbox><Checkbox>Show Failed/Incomplete Bookings</Checkbox></div><div className="drawer-form-actions"><Button onClick={onClose}>Reset</Button><Button className="primary-command" onClick={() => { onClose(); onOpenReservation(reservations[0]); }}>Search</Button></div></div></Drawer>;
+  return <Drawer className="reservation-search-drawer" onClose={onClose} open={open} placement="right" title="Search" size={440}><div className="drawer-form"><label className="drawer-filter-toggle"><Checkbox defaultChecked /> Reservation Date</label><PmsDateRangePicker aria-label="Reservation date range" defaultValue={["09/07/2026", "09/07/2026"]} /><label className="drawer-filter-toggle"><Checkbox /> Arrival</label><PmsDateRangePicker allowEmpty={[true, true]} aria-label="Arrival date range" disabled placeholder={["Start date", "End date"]} /><label>Business Source<Select defaultValue="-Select-" options={selectOptions} /></label><label>Travel Agent<Select defaultValue="-Select-" options={selectOptions} /></label><label>Company<Select defaultValue="-Select-" options={selectOptions} /></label><label>Room Type<Select defaultValue="-Select-" options={selectOptions} /></label><div className="reservation-search-pair"><label>Status<Select defaultValue="Active" options={[{ value: "Active", label: "Active" }, { value: "Cancelled", label: "Cancelled" }]} /></label><label>Res. Type<Select defaultValue="-Select-" options={selectOptions} /></label></div><div className="reservation-search-checks"><Checkbox>Show Unassigned Rooms</Checkbox><Checkbox>Without Deposit</Checkbox><Checkbox>CC Authorized</Checkbox><Checkbox>Show Failed/Incomplete Bookings</Checkbox></div><div className="drawer-form-actions"><Button onClick={onClose}>Reset</Button><Button className="primary-command" onClick={() => { onClose(); onOpenReservation(reservations[0]); }}>Search</Button></div></div></Drawer>;
 }
 function AssignRoomDrawer({ open, onClose }) {
   const arrivalRecord = reservations.find((record) => record.status === "Arriving") || reservations[0];
@@ -1096,10 +1105,23 @@ function MiniMetric({ label, value, detail, tone }) { return <article className=
 function StatusTag({ value }) { const tone = { "In house": "green", Arriving: "yellow", Confirmed: "blue", "Due out": "purple", Occupied: "green", Vacant: "blue", Reserved: "yellow", Blocked: "purple", Clean: "green", Dirty: "yellow", Inspected: "blue", Maintenance: "purple", Success: "green", Queued: "yellow", Connected: "green", Pending: "yellow", VIP: "purple", Active: "green" }[value] || "blue"; return <Tag className={`status-tag ${tone}`}>{value}</Tag>; }
 function EmptyPanel({ label }) { return <div className="empty-workspace compact"><FileText size={23} /><strong>{label}</strong><span>No additional information is available for this record.</span></div>; }
 
+const prototypeAccount = {
+  email: "abdalla.elfouly@gulfhero.sa",
+  password: "GulfHero@2026",
+  propertyCode: "22888"
+};
+
+const trustGroups = [
+  { title: "Global distribution", icon: Globe2, items: ["Google Hotels", "Booking.com", "Expedia Group", "Agoda", "Airbnb", "Almosafer"] },
+  { title: "Marketing & analytics", icon: BarChart3, items: ["Meta Business Manager", "Google Analytics", "Google Search Console", "Google Hotel Ads", "Semrush", "Intercom"] },
+  { title: "Saudi governance", icon: Landmark, items: ["Saudi Vision 2030", "ZATCA", "SDAIA · Data Privacy", "SDAIA · AI Ethics 2.0", "SAMA", "Mada"] },
+  { title: "International standards", icon: Network, items: ["HTNG", "PCI Security Standards Council", "UN Tourism · GCET", "Sustainable Hospitality Alliance", "ACM / IEEE Software Ethics", "USALI"] }
+];
+
 function LoginPage({ onPreview }) {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(prototypeAccount.email);
   const [password, setPassword] = useState("");
-  const [propertyCode, setPropertyCode] = useState("");
+  const [propertyCode, setPropertyCode] = useState(prototypeAccount.propertyCode);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -1107,7 +1129,9 @@ function LoginPage({ onPreview }) {
     event.preventDefault();
     setError("");
     if (!supabaseConfigured || !supabase) {
-      setError("This account uses direct workspace access. Select Open workspace to continue.");
+      const matchesAccount = email.trim().toLowerCase() === prototypeAccount.email && password === prototypeAccount.password && propertyCode.trim() === prototypeAccount.propertyCode;
+      if (matchesAccount) onPreview();
+      else setError("The username, password, or property code is incorrect.");
       return;
     }
     setLoading(true);
@@ -1119,18 +1143,23 @@ function LoginPage({ onPreview }) {
   return <main className="login-shell">
     <section className="login-brand-rail">
       <div className="login-property"><Building2 size={20} /><div><small>ACTIVE PROPERTY</small><span>SwissBlue Hotel Jeddah</span><b>Property code <strong>22888</strong></b></div></div>
+      <section className="login-trust" aria-labelledby="trust-title">
+        <div className="login-trust-heading"><span>TRUST &amp; COMPLIANCE</span><h2 id="trust-title">Designed for responsible hospitality operations</h2><p>A standards-alignment framework for distribution, analytics, Saudi governance, privacy and ethical software.</p></div>
+        <div className="trust-groups">{trustGroups.map((group) => <article className="trust-group" key={group.title}><h3>{group.title}</h3><div>{group.items.map((item) => <span className="trust-mark" key={item} title={item}><group.icon aria-hidden="true" size={14} /><b>{item}</b></span>)}</div></article>)}</div>
+        <p className="trust-disclaimer"><ShieldCheck size={13} /> Standards awareness for product design; no certification or live connection is implied.</p>
+      </section>
       <div className="login-brand-lockup"><BrandMark /><BrandWordmark /></div>
     </section>
     <section className="login-content">
       <form className="login-card" onSubmit={signIn}>
         <div className="login-heading"><span className="login-kicker">PROPERTY MANAGEMENT SYSTEM</span><h1>Welcome back, Abdalla</h1><p>Sign in to manage SwissBlue Hotel Jeddah.</p></div>
-        <label>Work email<Input autoComplete="email" onChange={(event) => setEmail(event.target.value)} placeholder="faisal.khalid@swissblue.sa" required type="email" value={email} /></label>
-        <label>Password<Input autoComplete="current-password" onChange={(event) => setPassword(event.target.value)} placeholder="Enter your password" required type="password" value={password} /></label>
+        <label>Username<Input autoComplete="username" onChange={(event) => setEmail(event.target.value)} placeholder="abdalla.elfouly@gulfhero.sa" required type="email" value={email} /></label>
+        <label>Password<Input.Password autoComplete="current-password" onChange={(event) => setPassword(event.target.value)} placeholder="Enter your password" required value={password} /></label>
         <label>Property code<Input inputMode="numeric" maxLength={10} onChange={(event) => setPropertyCode(event.target.value)} placeholder="22888" required value={propertyCode} /></label>
         {error && <div className="login-error" role="alert">{error}</div>}
         <Button className="login-submit" htmlType="submit" loading={loading} type="primary">Sign in</Button>
-        <div className={`login-database-status ${supabaseConfigured ? "ready" : "setup"}`}><ShieldCheck size={15} /><span>{supabaseConfigured ? "Secure sign-in is available for this property workspace." : "Secure workspace access is available for authorized team members."}</span></div>
-        {!supabaseConfigured && <Button className="login-preview" onClick={onPreview} type="button">Open workspace</Button>}
+        <div className={`login-database-status ${supabaseConfigured ? "ready" : "setup"}`}><ShieldCheck size={15} /><span>{supabaseConfigured ? "Secure sign-in is available for this property workspace." : "Local prototype access · Abdalla Elfouly · Group Owner"}</span></div>
+        {!supabaseConfigured && <Button className="login-preview" htmlType="button" onClick={onPreview} type="text">Continue without signing in</Button>}
         <p className="login-privacy">Authorized team members only. Workspace activity is protected by role-based access.</p>
       </form>
     </section>
@@ -1172,7 +1201,7 @@ function App() {
   if (!session && !previewMode) return <LoginPage onPreview={() => setPreviewMode(true)} />;
 
   return <PmsWorkspace
-    account={{ name: "Abdalla Elfouly", initials: "AE", role: "Group Owner", email: session?.user?.email || "abdalla.elfouly@gulfhero.local" }}
+    account={{ name: "Abdalla Elfouly", initials: "AE", role: "Group Owner", email: session?.user?.email || prototypeAccount.email }}
     databaseMode={supabaseConfigured ? "configured" : "setup"}
     onLogout={logout}
   />;

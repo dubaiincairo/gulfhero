@@ -2116,6 +2116,301 @@ export const marketReservations = [
   }
 ];
 
+export const marketRoomInventory = [
+  {
+    "number": "101",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "102",
+    "roomType": "Deluxe Junior Suite Twin"
+  },
+  {
+    "number": "103",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "104",
+    "roomType": "Junior Suite"
+  },
+  {
+    "number": "105",
+    "roomType": "Deluxe King Room City View"
+  },
+  {
+    "number": "106",
+    "roomType": "Presidential Suite City View"
+  },
+  {
+    "number": "107",
+    "roomType": "Deluxe Junior Suite Twin"
+  },
+  {
+    "number": "108",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "109",
+    "roomType": "Executive Suite"
+  },
+  {
+    "number": "110",
+    "roomType": "Superior Twin Room"
+  },
+  {
+    "number": "111",
+    "roomType": "Superior King Room"
+  },
+  {
+    "number": "112",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "201",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "202",
+    "roomType": "Deluxe Junior Suite Twin"
+  },
+  {
+    "number": "203",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "204",
+    "roomType": "Junior Suite"
+  },
+  {
+    "number": "205",
+    "roomType": "Deluxe King Room City View"
+  },
+  {
+    "number": "206",
+    "roomType": "Presidential Suite City View"
+  },
+  {
+    "number": "208",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "209",
+    "roomType": "Executive Suite"
+  },
+  {
+    "number": "210",
+    "roomType": "Superior Twin Room"
+  },
+  {
+    "number": "211",
+    "roomType": "Superior King Room"
+  },
+  {
+    "number": "212",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "301",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "302",
+    "roomType": "Deluxe Junior Suite Twin"
+  },
+  {
+    "number": "303",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "304",
+    "roomType": "Junior Suite"
+  },
+  {
+    "number": "305",
+    "roomType": "Deluxe King Room City View"
+  },
+  {
+    "number": "306",
+    "roomType": "Presidential Suite City View"
+  },
+  {
+    "number": "307",
+    "roomType": "Deluxe Junior Suite Twin"
+  },
+  {
+    "number": "308",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "309",
+    "roomType": "Executive Suite"
+  },
+  {
+    "number": "310",
+    "roomType": "Superior Twin Room"
+  },
+  {
+    "number": "311",
+    "roomType": "Superior King Room"
+  },
+  {
+    "number": "312",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "401",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "402",
+    "roomType": "Deluxe Junior Suite Twin"
+  },
+  {
+    "number": "404",
+    "roomType": "Junior Suite"
+  },
+  {
+    "number": "405",
+    "roomType": "Deluxe King Room City View"
+  },
+  {
+    "number": "406",
+    "roomType": "Presidential Suite City View"
+  },
+  {
+    "number": "407",
+    "roomType": "Deluxe Junior Suite Twin"
+  },
+  {
+    "number": "408",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "409",
+    "roomType": "Executive Suite"
+  },
+  {
+    "number": "410",
+    "roomType": "Superior Twin Room"
+  },
+  {
+    "number": "411",
+    "roomType": "Superior King Room"
+  },
+  {
+    "number": "412",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "501",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "502",
+    "roomType": "Deluxe Junior Suite Twin"
+  },
+  {
+    "number": "503",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "505",
+    "roomType": "Deluxe King Room City View"
+  },
+  {
+    "number": "506",
+    "roomType": "Presidential Suite City View"
+  },
+  {
+    "number": "507",
+    "roomType": "Deluxe Junior Suite Twin"
+  },
+  {
+    "number": "508",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "509",
+    "roomType": "Executive Suite"
+  },
+  {
+    "number": "510",
+    "roomType": "Superior Twin Room"
+  },
+  {
+    "number": "511",
+    "roomType": "Superior King Room"
+  },
+  {
+    "number": "512",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "601",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "602",
+    "roomType": "Deluxe Junior Suite Twin"
+  },
+  {
+    "number": "603",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "604",
+    "roomType": "Junior Suite"
+  },
+  {
+    "number": "605",
+    "roomType": "Deluxe King Room City View"
+  },
+  {
+    "number": "606",
+    "roomType": "Presidential Suite City View"
+  },
+  {
+    "number": "607",
+    "roomType": "Deluxe Junior Suite Twin"
+  },
+  {
+    "number": "608",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "609",
+    "roomType": "Executive Suite"
+  },
+  {
+    "number": "610",
+    "roomType": "Superior Twin Room"
+  },
+  {
+    "number": "611",
+    "roomType": "Superior King Room"
+  },
+  {
+    "number": "612",
+    "roomType": "Deluxe Junior Suite King Bed"
+  },
+  {
+    "number": "701",
+    "roomType": "Superior King Room"
+  },
+  {
+    "number": "702",
+    "roomType": "Superior King Room"
+  },
+  {
+    "number": "703",
+    "roomType": "Superior King Room"
+  },
+  {
+    "number": "704",
+    "roomType": "Superior King Room"
+  }
+];
+
 export const marketSummary = {
   "sourceRowsReviewed": 856,
   "sanitizedReservations": 96,
