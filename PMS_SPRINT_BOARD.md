@@ -167,3 +167,11 @@ context, and configurable modules, but all prototype data stays local fixtures.
   Terra owns UI/UX work, Luna owns product/research/documentation work, and
   5.5 owns complex engineering and verification when available. Every delegated
   task now requires a bounded packet, evidence, and Sol acceptance.
+- 2026-07-13: Phase 0 UI/UX trust-and-clarity wave fixed dashboard and Room
+  View reservation selection so the chosen guest opens the matching stay,
+  added a working property/role context for Abdalla Elfouly, replaced technical
+  database warnings with a fixture-preview boundary, clarified rate-control
+  labels, repaired distribution action accessibility, and added reservation
+  guide/boundary feedback. Browser-verified at 1440px and 1680px with no
+  relevant console errors; build passes. Next: make Add Reservation mutate a
+  coherent in-memory reservation/inventory model before the readiness gate.

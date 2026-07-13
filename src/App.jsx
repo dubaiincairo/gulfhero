@@ -244,6 +244,17 @@ function PmsWorkspace({ account, databaseMode, onLogout }) {
   const [headerPanel, setHeaderPanel] = useState(null);
   const [announcementsOpen, setAnnouncementsOpen] = useState(false);
 
+  useEffect(() => {
+    const openCommandSearch = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", openCommandSearch);
+    return () => window.removeEventListener("keydown", openCommandSearch);
+  }, []);
+
   const openReservation = (record) => {
     setReservation(record);
     setReservationStage("summary");
@@ -293,10 +304,10 @@ function PmsWorkspace({ account, databaseMode, onLogout }) {
         <SideNavigation active={module} databaseMode={databaseMode} expanded={railOpen} onChange={changeModule} />
         <main className="pms-main">
           <ModuleHeader module={module} onAddReservation={() => setAddReservationOpen(true)} />
-          {module === "dashboard" && <Dashboard onOpenReservation={() => openReservation(reservations[0])} onNavigate={changeModule} />}
+          {module === "dashboard" && <Dashboard onOpenReservation={openReservation} onNavigate={changeModule} />}
           {module === "reservations" && <ReservationsView onOpenReservation={openReservation} onSearch={() => setReservationSearchOpen(true)} />}
           {module === "stay" && <StayView onAssignRoom={() => setAssignRoomOpen(true)} onOpenReservation={(record) => openReservation(record || reservations[2])} />}
-          {module === "rooms" && <RoomView onOpenReservation={() => openReservation(reservations[0])} />}
+          {module === "rooms" && <RoomView onOpenReservation={openReservation} />}
           {module === "rates" && <RatesSurface businessDates={businessDates} rateGroups={rateGroups} />}
           {module === "distribution" && <DistributionSurface />}
           {module === "guests" && <GuestSurface roomRows={roomRows} />}
@@ -354,12 +365,12 @@ function AppHeader({ account, globalSearch, onGlobalSearch, onSearchFocus, onMen
         <Tooltip title="Open PMS navigation">
           <button className="header-icon" onClick={onMenu} aria-label="Open PMS navigation"><Menu size={20} /></button>
         </Tooltip>
-        <div className="property-switch">
+        <button className="property-switch" onClick={() => onOpenHeaderPanel("property")} aria-label="Open property context">
           <span>SwissBlue Hotel Jeddah</span>
           <strong>22888</strong>
           <ChevronDown size={14} />
-        </div>
-        <button className="property-sync" aria-label="Switch property"><RefreshCw size={16} /></button>
+        </button>
+        <button className="property-sync" onClick={() => onOpenHeaderPanel("property")} aria-label="Switch property"><RefreshCw size={16} /></button>
       </div>
       <div className="header-search">
         <Search size={16} />
@@ -416,9 +427,14 @@ function HeaderPopover({ account, kind, onClose, onLogout, onNavigate }) {
         </div>
       </section>}
       {kind === "system-alerts" && <SystemAlertsPopover onNavigate={onNavigate} />}
+      {kind === "property" && <PropertyContextPopover account={account} onNavigate={onNavigate} />}
       {kind === "profile" && <ProfilePopover account={account} onClose={onClose} onLogout={onLogout} onNavigate={onNavigate} />}
     </div>
   );
+}
+
+function PropertyContextPopover({ account, onNavigate }) {
+  return <section className="header-popover property-context-popover" aria-label="Property context"><div className="header-popover-arrow" /><div className="property-context-heading"><Building2 size={19} /><div><strong>SwissBlue Hotel Jeddah</strong><span>Property 22888</span></div><StatusTag value="Active" /></div><div className="property-context-facts"><p><span>Your role</span><b>{account.role}</b></p><p><span>Preview access</span><b>1 verified property</b></p></div><div className="property-context-note"><ShieldCheck size={15} /><span>Fixture preview only. No live hotel systems are connected.</span></div><button className="property-context-action" onClick={() => onNavigate("configuration")}>Review property access <ChevronRight size={15} /></button></section>;
 }
 
 function SystemAlertsPopover({ onNavigate }) {
@@ -446,7 +462,7 @@ function ProfilePopover({ account, onClose, onLogout, onNavigate }) {
     { label: "Point of Sale", icon: CircleDollarSign, module: "cashiering" },
     { label: "Security Advisory", icon: ShieldCheck, module: "configuration" }
   ];
-  return <section className="header-popover profile-popover" aria-label="User menu"><div className="header-popover-arrow" /><div className="profile-popover-user"><span>{account.initials}</span><b>{account.name}</b><KeyRound size={19} /></div><div className="profile-menu-list">{primaryActions.map((item) => { const Icon = item.icon; return <button key={item.label} onClick={() => onNavigate(item.module)}><Icon size={18} />{item.label}</button>; })}</div><div className="profile-help"><strong>NEED HELP?</strong><button onClick={onClose}><Building2 size={18} />Gulf Hero Academy</button><button onClick={onClose}><Info size={18} />Help Center</button></div><button className="profile-logout" onClick={onLogout}><LogOut size={18} />Logout</button></section>;
+  return <section className="header-popover profile-popover" aria-label="User menu"><div className="header-popover-arrow" /><div className="profile-popover-user"><span>{account.initials}</span><div><b>{account.name}</b><small>{account.role}</small></div><KeyRound size={19} /></div><div className="profile-menu-list">{primaryActions.map((item) => { const Icon = item.icon; return <button key={item.label} onClick={() => onNavigate(item.module)}><Icon size={18} />{item.label}</button>; })}</div><div className="profile-help"><strong>NEED HELP?</strong><button onClick={onClose}><Building2 size={18} />Gulf Hero Academy</button><button onClick={onClose}><Info size={18} />Help Center</button></div><button className="profile-logout" onClick={onLogout}><LogOut size={18} />Logout</button></section>;
 }
 
 const announcements = [
@@ -471,7 +487,7 @@ function SideNavigation({ active, databaseMode, expanded, onChange }) {
       <div className="nav-fill" />
       <div className="nav-footer">
         <div className="side-brand"><span>GH</span>{expanded && <div><b>Gulf Hero</b><small>PMS</small></div>}</div>
-        {expanded && <div className="nav-security"><ShieldCheck size={14} /><span>{databaseMode === "configured" ? "Supabase configured" : "Supabase setup required"}</span></div>}
+        {expanded && <div className="nav-security"><ShieldCheck size={14} /><span>{databaseMode === "configured" ? "Secure property workspace" : "Fixture preview · Local only"}</span></div>}
       </div>
     </aside>
   );
@@ -565,7 +581,7 @@ function Dashboard({ onOpenReservation, onNavigate }) {
           </div>
         </section>
         <section className="dashboard-panel activity-panel">
-          <div className="panel-title"><div><h2>Activity</h2><p>Recent property changes</p></div><button><MoreVertical size={18} /></button></div>
+          <div className="panel-title"><div><h2>Activity</h2><p>Recent property changes</p></div></div>
           <ul className="activity-list"><li><i className="success" /><span><strong>Rate review completed</strong><small>Room Only Flexible updated successfully</small></span><time>8 min</time></li><li><i className="yellow" /><span><strong>Room 214 flagged</strong><small>Maintenance task created by housekeeping</small></span><time>24 min</time></li><li><i className="info" /><span><strong>New reservation received</strong><small>Direct booking for Superior King Room</small></span><time>39 min</time></li></ul>
         </section>
       </div>
@@ -870,12 +886,13 @@ function AddReservationDrawer({ open, onClose, onReserve }) {
   const [discount, setDiscount] = useState(false);
   const [paymentMode, setPaymentMode] = useState("Cash / Bank");
   const [saved, setSaved] = useState("");
+  const [guideOpen, setGuideOpen] = useState(false);
 
   const roomLine = (index) => (
     <div className="room-rate-grid data" key={index}>
       <Select defaultValue={index === 0 ? "Superior King Room" : "-Select-"} options={roomTypeOptions} size="small" />
       <Select defaultValue={index === 0 ? "Room Only Flexible" : "-Select-"} options={ratePlanOptions} size="small" />
-      <Select defaultValue={index === 0 ? "305" : "Unassigned"} options={[{ value: "Unassigned", label: "Unassigned" }, { value: "305", label: "305" }, { value: "415", label: "415" }]} size="small" />
+      <Select defaultValue="Unassigned" options={[{ value: "Unassigned", label: "Unassigned" }]} size="small" />
       <Input defaultValue="2" size="small" />
       <Input defaultValue="0" size="small" />
       <Input defaultValue={index === 0 ? "575.00" : "0.00"} size="small" />
@@ -887,7 +904,7 @@ function AddReservationDrawer({ open, onClose, onReserve }) {
     window.setTimeout(() => onReserve({
       id: "R-30262",
       guest: "New Guest",
-      room: "305",
+      room: "—",
       roomType: "Superior King Room",
       arrival: "09 Jul",
       departure: "11 Jul",
@@ -903,9 +920,10 @@ function AddReservationDrawer({ open, onClose, onReserve }) {
     <Drawer className="add-reservation-drawer" closable={false} onClose={onClose} open={open} placement="right" rootClassName="add-reservation-root" size="min(1120px, 94vw)">
       <div className="drawer-page-header">
         <div><button onClick={onClose} aria-label="Close Add Reservation"><ChevronLeft size={18} /></button><h2>Add Reservation</h2></div>
-        <Button icon={<CircleHelpIcon />} size="small">Reservation Guide</Button>
+        <Button icon={<CircleHelpIcon />} onClick={() => setGuideOpen((current) => !current)} size="small">Reservation Guide</Button>
       </div>
       <div className="add-reservation-layout">
+        {guideOpen && <div className="reservation-guide-callout"><Info size={16} /><span><b>Reservation preview guide</b>Review stay dates, select an available room, confirm guest and billing details, then use Reserve. This fixture workflow opens a reservation summary but does not post to a live hotel system.</span><button onClick={() => setGuideOpen(false)} aria-label="Close reservation guide"><X size={15} /></button></div>}
         <section className="add-reservation-form">
           <FormSection title="Stay Details" fields={["Check-in", "Check-out", "Nights", "Room(s)", "Reservation Type", "Booking Source", "Business Source", "Market Segment", "Sales Person"]} values={{ "Check-in": "09/07/2026", "Check-out": "11/07/2026", Nights: "2", "Room(s)": String(roomCount), "Reservation Type": "Confirm Booking", "Booking Source": "Direct", "Business Source": "-Select-", "Market Segment": "-Select-", "Sales Person": "-Select-" }} />
           <div className="booking-options"><Checkbox disabled>Contract</Checkbox><Checkbox>Book All Available Rooms</Checkbox><Checkbox>Quick Group Booking</Checkbox><Checkbox>Complimentary Room</Checkbox></div>
@@ -928,7 +946,7 @@ function AddReservationDrawer({ open, onClose, onReserve }) {
           <section className="payment-mode-panel"><div><span>Payment Mode</span><Checkbox defaultChecked /></div><Radio.Group value={paymentMode} onChange={(event) => setPaymentMode(event.target.value)}><Radio value="Cash / Bank">Cash / Bank</Radio><Radio value="City Ledger">City Ledger</Radio></Radio.Group><Select defaultValue={paymentMode === "City Ledger" ? "City Ledger" : "Cash"} options={[{ value: "Cash", label: "Cash" }, { value: "Bank", label: "Bank" }, { value: "City Ledger", label: "City Ledger" }]} size="small" /></section>
         </aside>
       </div>
-      <div className="drawer-page-footer">{saved && <span className="drawer-saved"><CheckCircle2 size={14} />Reservation {saved === "In house" ? "checked in" : "created"}</span>}<Button onClick={onClose}>Cancel</Button><span /><Button onClick={() => completeBooking("In house")}>Check-In</Button><Button className="primary-command" onClick={() => completeBooking("Confirmed")}>{saved ? "Created" : "Reserve"}</Button></div>
+      <div className="drawer-page-footer">{saved ? <span className="drawer-saved"><CheckCircle2 size={14} />Reservation preview {saved === "In house" ? "checked in" : "prepared"}</span> : <span className="drawer-preview-note">Fixture preview · no live booking is posted</span>}<Button onClick={onClose}>Cancel</Button><span /><Button onClick={() => completeBooking("In house")}>Check-In</Button><Button className="primary-command" onClick={() => completeBooking("Confirmed")}>{saved ? "Prepared" : "Reserve"}</Button></div>
     </Drawer>
   );
 }
@@ -970,7 +988,7 @@ function LoginPage({ onPreview }) {
     event.preventDefault();
     setError("");
     if (!supabaseConfigured || !supabase) {
-      setError("Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to enable Supabase sign-in.");
+      setError("Live sign-in is unavailable in this fixture preview. Use Enter preview workspace.");
       return;
     }
     setLoading(true);
@@ -991,9 +1009,9 @@ function LoginPage({ onPreview }) {
         <label>Password<Input autoComplete="current-password" onChange={(event) => setPassword(event.target.value)} placeholder="Enter your password" type="password" value={password} /></label>
         {error && <div className="login-error" role="alert">{error}</div>}
         <Button className="login-submit" htmlType="submit" loading={loading} type="primary">Sign in</Button>
-        <div className={`login-database-status ${supabaseConfigured ? "ready" : "setup"}`}><ShieldCheck size={15} /><span>{supabaseConfigured ? "Supabase credentials detected. Sign in uses email and password authentication." : "Supabase is prepared locally. Add the project URL and publishable key to activate live sign-in."}</span></div>
-        {!supabaseConfigured && <Button className="login-preview" onClick={onPreview} type="button">Open seeded preview</Button>}
-        <p className="login-privacy">Seeded English-language fixtures are isolated from live guest data.</p>
+        <div className={`login-database-status ${supabaseConfigured ? "ready" : "setup"}`}><ShieldCheck size={15} /><span>{supabaseConfigured ? "Secure sign-in is available for this property workspace." : "Preview mode uses local fixtures and does not connect to hotel systems."}</span></div>
+        {!supabaseConfigured && <Button className="login-preview" onClick={onPreview} type="button">Enter preview workspace</Button>}
+        <p className="login-privacy">English-language fixtures only. No live guest data or external systems.</p>
       </form>
     </section>
   </main>;
@@ -1034,7 +1052,7 @@ function App() {
   if (!session && !previewMode) return <LoginPage onPreview={() => setPreviewMode(true)} />;
 
   return <PmsWorkspace
-    account={{ name: "Abdalla Elfouly", initials: "AE", email: session?.user?.email || "abdalla.elfouly@gulfhero.local" }}
+    account={{ name: "Abdalla Elfouly", initials: "AE", role: "Group Owner", email: session?.user?.email || "abdalla.elfouly@gulfhero.local" }}
     databaseMode={supabaseConfigured ? "configured" : "setup"}
     onLogout={logout}
   />;
