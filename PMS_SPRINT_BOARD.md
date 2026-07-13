@@ -24,6 +24,9 @@ context, and configurable modules, but all prototype data stays local fixtures.
 - Keep dialogs, menus, and side panels temporary. Do not turn them into
   permanent page content.
 - Do not deploy, push, or alter production without an explicit user request.
+- A Vercel-hosted collaboration demo is allowed only when explicitly requested:
+  it must be fixture-only, smoke-tested after deployment, and separate from
+  production.
 - Use verified SwissBlue Hotel Jeddah property data from the supplied source
   screenshots and research. Use only English client-name fixtures that have
   been explicitly approved for the prototype; do not copy live guest personal
@@ -137,3 +140,14 @@ context, and configurable modules, but all prototype data stays local fixtures.
   concepts through local fixtures only; mobile/native, real authentication,
   billing, payments, integrations, and external connections are explicitly
   deferred. This boundary governs future planning and implementation.
+- 2026-07-13 22:00: Rebuilt the product constitution from founder discovery.
+  It now distinguishes the current desktop-fixture prototype from the first
+  paid Saudi hotel-group release, defines fixed per-property roles and
+  configuration ownership, establishes financial/rate/overbooking integrity,
+  confirms eZee functional familiarity with Gulf Hero UI/UX improvements, and
+  documents the Saudi English-first, SAR/VAT, audit, performance, and staged
+  integration roadmap.
+- 2026-07-13 22:00: Added Vercel-hosted collaboration-demo readiness to the
+  product direction. Demos enable Gulf-wide colleagues and leads to try the
+  fixture-only desktop product; they remain non-production and require explicit
+  deployment approval plus a post-deployment smoke test.

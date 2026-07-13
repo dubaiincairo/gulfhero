@@ -2,14 +2,28 @@
 
 **A modern, AI-native Property Management System for hotels — built to beat eZee Absolute on UI/UX, intelligence, and staff-friendliness.**
 
-GulfHero is a multi-tenant, browser-based SaaS PMS for independent hotels,
-boutique properties, and small chains. It covers the same ground as eZee
-Absolute (reservations, front desk, housekeeping, billing, booking engine,
-distribution) but is designed from day one to be:
+GulfHero is a multi-tenant, browser-based SaaS PMS for hotel groups. It is
+built from ten years of Saudi hospitality experience and takes eZee Absolute,
+Centrix, and Optimus as its main functional references. It covers the same
+operational ground, then improves the experience through Gulf Hero UI/UX:
 
 1. **Beautiful and fast to use** — a clean, modern interface where the most common front-desk actions take one or two clicks, not a hunt through crowded menus.
 2. **Smart** — AI is woven into the core: an AI front-desk copilot, dynamic pricing suggestions, AI guest messaging, natural-language reports, and predictive housekeeping.
 3. **Staff-first** — built around real hotel shifts (morning check-outs, evening check-ins, night audit), with role-based screens so a receptionist, housekeeper, and manager each see exactly what they need.
+
+## Commercial and launch direction
+
+- **Customer:** hotel groups
+- **Subscription target:** approximately SAR 1,000 per property, annually
+- **First market:** Saudi Arabia
+- **Launch language:** English; Arabic and full RTL follow first after launch
+- **Launch operation:** browser-based desktop application, online-first, with
+  Google Chrome on Windows front-desk PCs as the primary environment
+- **Financial defaults:** SAR and Saudi VAT, configurable per property
+- **Hosting:** regional cloud is acceptable when security and strict
+  property-data isolation are maintained
+- **Collaboration access:** a Vercel-hosted, fixture-only demo will let
+  colleagues and leads across the Gulf try the product before production
 
 ## Current prototype definition
 
@@ -23,6 +37,20 @@ integrations, payments, checkout, Night Audit execution, and all external
 connections. The prototype uses verified SwissBlue Hotel Jeddah property and
 room facts plus explicitly approved English-language fixture clients; it never
 uses live guest personal data.
+
+A Vercel collaboration demo is permitted when explicitly approved. It must use
+fixture data only, remain separate from production, and never include live
+guest data, production credentials, or operational integrations.
+
+## First paid-release scope
+
+The core operational release covers Reservations; Rates and Availability;
+Guest, Company, and Travel Agent Management; Cashiering; Housekeeping;
+Reporting; and Configuration. Internal cashiering and accounting-style payment
+posting will be real in that release, but bank, payment-gateway, government,
+ZATCA, Tourism Observatory Platform, and Shamoos connections are later work.
+AI and channel-management capability begin as prototype/visual modules; AI
+recommends actions for a human to approve and never acts autonomously.
 
 ## How this project is built
 
