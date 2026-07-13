@@ -46,7 +46,7 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
 - [x] Booking Engine: Booking Engine Summary, Settings, Analytics & Tracking,
       Customization, and Preferences as desktop prototype tabs, plus a local
       desktop preview drawer that intentionally stops before checkout/payment.
-- [ ] Cashiering and Cash Drawer: source-style list, drawer session/report
+- [x] Cashiering and Cash Drawer: source-style list, drawer session/report
       tabs, and temporary Create Drawer workflow.
 - [ ] Housekeeping: House Status, Maintenance Block, and Work Order/Task
       workspaces with temporary forms.
@@ -87,3 +87,9 @@ drawers, and temporary modal workflows. It is not a live transactional PMS.
   states, and completed rate-detail tabs. Playwright verified all tabs,
   grid edits, local saves, filters, and drawer states at 1440px; build passes.
   Next: Cashiering and Cash Drawer.
+- 2026-07-13 22:00: Completed Cashiering and Cash Drawer with source-style
+  ledger controls, a clearly local-only payment preview, Drawers and Cashier
+  Report tabs, Audit Trail, and a temporary Create Drawer modal. Playwright
+  verified the payment boundary, drawer creation, local report row, audit
+  trail, and 1440px desktop layout with no relevant console errors; build
+  passes. Next: Housekeeping.

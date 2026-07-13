@@ -232,7 +232,6 @@ function App() {
   const [reservationSearchOpen, setReservationSearchOpen] = useState(false);
   const [assignRoomOpen, setAssignRoomOpen] = useState(false);
   const [guestDrawerOpen, setGuestDrawerOpen] = useState(false);
-  const [cashDrawerOpen, setCashDrawerOpen] = useState(false);
   const [configDrawer, setConfigDrawer] = useState(null);
   const [taskDrawerOpen, setTaskDrawerOpen] = useState(false);
   const [headerPanel, setHeaderPanel] = useState(null);
@@ -293,7 +292,7 @@ function App() {
           {module === "rates" && <RatesSurface businessDates={businessDates} rateGroups={rateGroups} />}
           {module === "distribution" && <DistributionSurface />}
           {module === "guests" && <GuestSurface onAdd={() => setGuestDrawerOpen(true)} onOpenReservation={() => openReservation(reservations[0])} />}
-          {module === "cashiering" && <CashieringSurface onNewPayment={() => setCashDrawerOpen(true)} onOpenReservation={() => openReservation(reservations[0])} />}
+          {module === "cashiering" && <CashieringSurface />}
           {module === "housekeeping" && <HousekeepingSurface roomRows={roomRows} onAddTask={() => setTaskDrawerOpen(true)} />}
           {module === "reports" && <ReportsSurface />}
           {module === "configuration" && <ConfigurationSurface onAdd={setConfigDrawer} />}
@@ -334,7 +333,6 @@ function App() {
       <ReservationSearchDrawer open={reservationSearchOpen} onClose={() => setReservationSearchOpen(false)} onOpenReservation={openReservation} />
       <AssignRoomDrawer open={assignRoomOpen} onClose={() => setAssignRoomOpen(false)} />
       <EntityDrawer open={guestDrawerOpen} title="Add Guest" onClose={() => setGuestDrawerOpen(false)} fields={["Full Name", "Mobile", "Email", "Nationality", "Guest Type"]} action="Add Guest" />
-      <EntityDrawer open={cashDrawerOpen} title="New Payment" onClose={() => setCashDrawerOpen(false)} fields={["Date", "Folio", "Amount", "Mode of Payment", "Remark"]} action="Add Payment" />
       <EntityDrawer open={Boolean(configDrawer)} title={configDrawer?.title || "Add Record"} onClose={() => setConfigDrawer(null)} fields={["Name", "Description"]} action={configDrawer?.action || "Save"} />
       <EntityDrawer open={taskDrawerOpen} title="Add Task" onClose={() => setTaskDrawerOpen(false)} fields={["Unit / Room", "Category", "Priority", "Description", "Due Date", "Assign To"]} action="Save Task" />
       <HeaderPopover kind={headerPanel} onClose={() => setHeaderPanel(null)} onNavigate={changeModule} />
