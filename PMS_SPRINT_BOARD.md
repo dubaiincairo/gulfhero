@@ -77,7 +77,7 @@ context, and configurable modules, but all prototype data stays local fixtures.
       Gulf Hero brand placement.
 - [x] Cross-module polish: every visible tab/action has a finished desktop
       surface, no placeholder layouts, and no dead primary controls.
-- [ ] Desktop QA: 1440px and large-desktop visual review, build validation,
+- [x] Desktop QA: 1440px and large-desktop visual review, build validation,
       then an explicit deployment decision.
 
 ## Scheduled Run Checklist
@@ -189,3 +189,7 @@ context, and configurable modules, but all prototype data stays local fixtures.
   filtering, reservation filtering, and the visual-only Booking Engine preview
   (no checkout or payment controls) at 1440px and 1680px; build passes. Next:
   an explicit deployment decision.
+- 2026-07-14 19:00: Completed final desktop QA at 1440px and 1680px; clarified
+  the Booking Engine link control with a fixture-only review modal, verified no
+  live endpoint/payment/checkout path, and confirmed the local build passes.
+  Deployment remains unrequested; no production action was taken.
