@@ -208,3 +208,9 @@ context, and configurable modules, but all prototype data stays local fixtures.
 - 2026-07-15 19:00: All planned prototype waves remain complete. The production
   build passes; in-app browser QA is pending because this environment blocks
   localhost port binding. No deployment or external connection was attempted.
+- 2026-07-15 20:00: Completed the carried Configuration navigation polish so
+  single-entry groups no longer imply unavailable subsections. `npm run build`
+  passes. Playwright is installed, but this managed environment blocks both
+  localhost binding and Chromium startup; no deployment or external connection
+  was attempted. The local branch awaits its GitHub push because the environment
+  cannot resolve github.com. No further build wave remains.
