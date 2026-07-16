@@ -4,3 +4,18 @@ dist
 .playwright-mcp
 qa-screens
 .DS_Store
+.agents/
+
+# Local research/reference material. Keep these out of Git because source
+# screenshots and exports can contain third-party or guest information.
+/analysis-contact-sheets/
+/drive-screens/
+/organized-screenshots/
+/reference-screens/
+/drive-screens-manifest.json
+/drive-screens-missing-after-direct.json
+/ipms-reservations-departures.png
+/live-pms-reports-shell.png
+
+# The skill lockfile is committed; installed skill package copies are
+# reproducible local tooling and remain excluded.
