@@ -4,7 +4,7 @@
 
 export const reservationReferenceDate = "2026-01-24";
 
-export const marketReservations = [
+const rawMarketReservations = [
   {
     "recordKey": "RSV20140-01",
     "id": "RSV20140",
@@ -21406,6 +21406,17 @@ export const marketReservations = [
     "vip": false
   }
 ];
+
+function cleanReservationGuestName(name) {
+  return String(name)
+    .split(/\s*[\\/]\s*/)[0]
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export const marketReservations = rawMarketReservations
+  .filter((record) => !/\s\+\s/.test(record.guest))
+  .map((record) => ({ ...record, guest: cleanReservationGuestName(record.guest) }));
 
 export const marketRoomInventory = [
   {
