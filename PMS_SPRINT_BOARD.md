@@ -224,3 +224,9 @@ context, and configurable modules, but all prototype data stays local fixtures.
   or production action was taken. The checkpoint commit remains local because
   this environment cannot resolve `github.com`; retry the push when DNS access
   is restored.
+- 2026-07-16: Replaced the prototype reservations with 96 sanitized English
+  fixtures derived from the approved 856-row demo report, rebuilt Stay View to
+  the supplied expanded/folded references, and completed the Hotel Profile and
+  five-step Rate Plan flows. In-app browser regression, clean-console review,
+  and `npm run build` pass; no live guest fields, endpoint, payment, checkout,
+  external connection, deployment, or production action was added.

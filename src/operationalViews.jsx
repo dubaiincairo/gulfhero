@@ -1,26 +1,45 @@
 import React, { useMemo, useState } from "react";
 import { Button, Checkbox, Drawer, Input, Modal, Radio, Select, Switch, Table, Tabs, Tag } from "antd";
 import {
+  AirVent,
+  AlignLeft,
   BarChart3,
   BedDouble,
+  Bold,
+  Building2,
   CalendarDays,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
   ClipboardCheck,
   ClipboardList,
+  Coffee,
   Download,
   FileText,
+  Image as ImageIcon,
   Info,
+  Italic,
+  Landmark,
+  Link2,
+  List,
   ListChecks,
+  ListOrdered,
+  MapPin,
+  Monitor,
   MoreVertical,
+  Pencil,
   Plus,
+  Redo2,
   RefreshCw,
   Save,
   Search,
   ShieldCheck,
   SlidersHorizontal,
+  Trash2,
+  Underline,
+  Undo2,
   Upload,
+  UploadCloud,
   Users,
   Wrench
 } from "lucide-react";
@@ -421,7 +440,7 @@ const roomTypeConfigRows = [
   { key: "3", name: "Deluxe King Room City View", base: "1/0", max: "4/4", status: true, updated: "09 Jul 2026" },
   { key: "4", name: "Junior Suite", base: "1/0", max: "2/2", status: true, updated: "09 Jul 2026" },
   { key: "5", name: "Deluxe Junior Suite King Bed", base: "1/0", max: "3/1", status: true, updated: "09 Jul 2026" },
-  { key: "6", name: "Deluxe Junior Suite Twin", base: "1/0", max: "3/1", status: true, updated: "09 Jul 2026" },
+  { key: "6", name: "Deluxe Junior Suite 2 Single Bed", base: "1/0", max: "3/1", status: true, updated: "09 Jul 2026" },
   { key: "7", name: "Executive Suite", base: "1/0", max: "6/2", status: true, updated: "09 Jul 2026" },
   { key: "8", name: "Presidential Suite City View", base: "1/0", max: "4/4", status: true, updated: "09 Jul 2026" },
   { key: "9", name: "Meeting Room", base: "1/0", max: "2/0", status: true, updated: "09 Jul 2026" },
@@ -440,7 +459,7 @@ const ratePlanConfigRows = roomTypeConfigRows.flatMap((roomType, index) => [
 
 const configurationSections = {
   "User Management": { description: "Manage users, roles, security preferences and device activity.", tabs: ["Users", "User Role", "Blocked Users", "Device Activity", "User Activity", "Security Preferences"], add: "User", rows: [{ key: "1", name: "Abdalla Elfouly", description: "PMS Owner", status: true, updated: "09 Jul 2026" }, { key: "2", name: "Night Auditor", description: "Financial review and night audit", status: true, updated: "08 Jul 2026" }, { key: "3", name: "Housekeeping Manager", description: "Rooms, tasks and inspection", status: true, updated: "08 Jul 2026" }] },
-  "Hotel Profile": { description: "Maintain property identity, operating dates and contact details.", tabs: ["Property", "Addresses", "Business Day", "Audit Trail"], add: "Property Record", rows: [{ key: "1", name: "SwissBlue Hotel Jeddah", description: "Primary property profile", status: true, updated: "09 Jul 2026" }, { key: "2", name: "Business day", description: "09 Jul 2026, open", status: true, updated: "09 Jul 2026" }] },
+  "Hotel Profile": { description: "Maintain property identity, highlights, amenities, gallery and policies.", tabs: ["Profile", "Highlights", "Amenities", "Photo Gallery", "Policies"], add: "Property Record", rows: [{ key: "1", name: "SwissBlue Hotel Jeddah", description: "Primary property profile", status: true, updated: "09 Jul 2026" }, { key: "2", name: "Business day", description: "09 Jul 2026, open", status: true, updated: "09 Jul 2026" }] },
   "Rooms & Rates": { description: "Define how your rooms look, feel, and operate - from smart amenities to flexible occupancy settings, all in one seamless space.", tabs: ["Room Type", "Rate Type", "Rate Plan", "Tax"], add: "Room Type", rows: roomTypeConfigRows },
   "Taxes & Payments": { description: "Configure tax profiles, payment modes and folio posting rules.", tabs: ["Taxes", "Payment Modes", "Folio Rules", "Audit Trail"], add: "Payment Mode", rows: [{ key: "1", name: "VAT 15%", description: "Inclusive room tax", status: true, updated: "09 Jul 2026" }, { key: "2", name: "Cash", description: "Front desk cash payment", status: true, updated: "08 Jul 2026" }] },
   "Guest Setup": { description: "Manage guest classifications, preference lists and identity rules.", tabs: ["Guest Types", "Preferences", "Identity Types", "Audit Trail"], add: "Guest Type", rows: [{ key: "1", name: "VIP", description: "Priority service handling", status: true, updated: "07 Jul 2026" }, { key: "2", name: "Corporate", description: "Company billing profile", status: true, updated: "07 Jul 2026" }] },
@@ -511,10 +530,172 @@ function BookingEngineWorkspace() {
   return <><div className="booking-engine-workspace"><div className="config-heading"><div><div className="configuration-context"><InlineStatus tone="muted">Booking Engine</InlineStatus></div><h2>Booking Engine</h2><p>Configure a visual desktop booking experience for SwissBlue Hotel Jeddah.</p></div><Button className="primary-command" onClick={() => setPreviewOpen(true)} size="small">Open booking experience</Button></div><Tabs activeKey={tab} onChange={setTab} className="config-tabs" items={bookingEngineTabs.map((label) => ({ key: label, label }))} size="small" />{tabContent}<div className="surface-status"><ShieldCheck size={14} />{notice}</div></div><BookingEnginePreview open={previewOpen} onClose={() => setPreviewOpen(false)} /><Modal className="booking-link-modal" footer={<Button onClick={() => setLinkPreviewOpen(false)}>Close</Button>} onCancel={() => setLinkPreviewOpen(false)} open={linkPreviewOpen} title="Booking link review" width={520}><div className="booking-link-preview"><InlineStatus tone="muted">Fixture-only prototype</InlineStatus><h3>Website placement review</h3><p>This is a visual configuration checkpoint for SwissBlue Hotel Jeddah. No live booking URL, payment flow, checkout, or external connection is available from this prototype.</p><div className="booking-link-preview-state"><span>Booking endpoint</span><b>Not connected</b><small>Enable a property-approved endpoint only in a future release.</small></div></div></Modal></>;
 }
 
+const hotelProfileTabs = ["Profile", "Highlights", "Amenities", "Photo Gallery", "Policies"];
+const hotelHighlightTabs = ["Local Attractions & Points of Interest", "Directions & Transportation", "Onsite & Nearby Activities", "About the Property", "Famous Nearby Landmarks"];
+const hotelPolicyTabs = ["Hotel Policy", "Cancellation Policy", "Check-in Policies & Guidelines", "Parking & Arrival Details", "Family & Extra Guest Policy", "Reservation Terms & Conditions"];
+const hotelGalleryItems = ["Property exterior", "Lobby seating", "Reception lounge", "Guest corridor", "Waiting area", "Meeting room", "Reception desk", "Indoor pool", "Breakfast buffet", "Dining buffet", "Locker room", "Guest room", "Bathroom", "In-room kitchenette", "Twin room", "King room", "Suite bedroom"];
+const initialHotelAmenities = [
+  { key: "front-desk", name: "24/7 front desk", enabled: true, icon: Building2 },
+  { key: "air-conditioner", name: "Air Conditioner", enabled: true, icon: AirVent },
+  { key: "views", name: "Amazing Views", enabled: true, icon: ImageIcon },
+  { key: "banquet", name: "Banquet hall", enabled: false, icon: Landmark },
+  { key: "bar", name: "Bar", enabled: true, icon: Coffee },
+  { key: "breakfast", name: "Breakfast", enabled: true, icon: Coffee },
+  { key: "cable", name: "Cable TV", enabled: true, icon: Monitor },
+  { key: "tours", name: "City Tours", enabled: false, icon: MapPin },
+  { key: "coffee", name: "Coffee Machine", enabled: true, icon: Coffee },
+  { key: "conference", name: "Conference Room", enabled: false, icon: Users },
+  { key: "contactless", name: "Contactless check-in", enabled: false, icon: Building2 },
+  { key: "housekeeping", name: "Daily Housekeeping", enabled: true, icon: BedDouble },
+  { key: "dry-cleaning", name: "Dry Cleaning", enabled: true, icon: Wrench }
+];
+
+function HotelProfileField({ children, label, required = false }) {
+  return <label className="hotel-profile-field"><span>{label}{required && <b>*</b>}<Info size={12} /></span>{children}</label>;
+}
+
+function HotelRichToolbar({ onAction }) {
+  const tools = [[Bold, "Bold"], [Italic, "Italic"], [Underline, "Underline"], [AlignLeft, "Align left"], [List, "Bulleted list"], [ListOrdered, "Numbered list"], [Undo2, "Undo"], [Redo2, "Redo"]];
+  return <div className="hotel-rich-toolbar"><Select defaultValue="Size" options={[{ value: "Size", label: "Size" }, { value: "Small", label: "Small" }, { value: "Normal", label: "Normal" }, { value: "Large", label: "Large" }]} size="small" />{tools.map(([Icon, label]) => <button aria-label={label} key={label} onClick={() => onAction(label)} type="button"><Icon size={16} /></button>)}</div>;
+}
+
+function HotelProfileWorkspace({ tab, onTab }) {
+  const [profile, setProfile] = useState({
+    propertyName: "SwissBlue Hotel Jeddah",
+    propertyType: "Hotels",
+    stars: "3 stars",
+    email: "reservations@swissblue.sa",
+    primaryContact: "+966122525551",
+    reservationContact: "+96612252552",
+    website: "www.test.swissblue.sa",
+    fax: "",
+    registration: "300865965100003",
+    address1: "2109 Hera st.",
+    address2: "",
+    country: "Saudi Arabia",
+    region: "",
+    city: "Jeddah",
+    postal: "JDBA 2109, 23531"
+  });
+  const [highlightTab, setHighlightTab] = useState(hotelHighlightTabs[0]);
+  const [highlightText, setHighlightText] = useState("");
+  const [policyTab, setPolicyTab] = useState(hotelPolicyTabs[0]);
+  const [policyText, setPolicyText] = useState("Welcome to SwissBlue Hotel Jeddah!\n\nTo ensure a comfortable and seamless experience for all our guests, please take a moment to review our hotel policies:\n\n• Check-In / Out: Check-in starts at 2:00 PM, and check-out is by 12:00 PM. Early check-in or late check-out requests are subject to availability and may incur additional charges.\n• Identification Requirements: A valid government-issued ID, Saudi Iqama, or Passport matching the reservation name must be presented by all staying guests upon arrival.\n• Payment & Guarantee: We accept all major credit/debit cards (including Mada) and cash. A refundable security deposit may be requested at check-in to cover incidental charges.\n• Smoke-Free Policy: All indoor public spaces are 100% smoke-free. Designated outdoor smoking areas are available.\n• Pet Policy: Pets are not permitted on the property.");
+  const [amenities, setAmenities] = useState(initialHotelAmenities);
+  const [amenityQuery, setAmenityQuery] = useState("");
+  const [amenityModalOpen, setAmenityModalOpen] = useState(false);
+  const [newAmenity, setNewAmenity] = useState("");
+  const [galleryModalOpen, setGalleryModalOpen] = useState(false);
+  const [selectedGalleryItem, setSelectedGalleryItem] = useState(null);
+  const [auditOpen, setAuditOpen] = useState(false);
+  const [dirty, setDirty] = useState(false);
+  const [notice, setNotice] = useState("Hotel Profile reflects the selected SwissBlue Hotel Jeddah property.");
+  const [twentyFourHourCheckout, setTwentyFourHourCheckout] = useState(false);
+  const [earlyCheckIn, setEarlyCheckIn] = useState(true);
+  const updateProfile = (field, value) => { setProfile((current) => ({ ...current, [field]: value })); setDirty(true); };
+  const markEditorAction = (action) => { setDirty(true); setNotice(`${action} formatting selected for the active editor.`); };
+  const save = () => { setDirty(false); setNotice(`${tab} changes saved in the visual prototype.`); };
+  const addAmenity = () => {
+    const name = newAmenity.trim();
+    if (!name) return;
+    setAmenities((current) => [...current, { key: `local-${Date.now()}`, name, enabled: true, icon: Building2 }]);
+    setNewAmenity("");
+    setAmenityModalOpen(false);
+    setDirty(true);
+    setNotice(`${name} added to the property amenity list.`);
+  };
+  const footer = <div className="hotel-profile-footer"><span><ShieldCheck size={14} />{notice}</span><Button onClick={() => setAuditOpen(true)}>Audit Trail</Button><Button className={dirty ? "primary-command" : ""} disabled={!dirty} icon={<Save size={14} />} onClick={save}>Save</Button></div>;
+
+  const profilePanel = <div className="hotel-profile-scroll"><section className="hotel-profile-section"><h3>General Settings</h3><div className="hotel-general-layout"><div className="hotel-logo-field"><span>Hotel Logo <Info size={12} /></span><div className="hotel-logo-source"><Building2 size={46} /><b>SwissBlue</b><small>Source logo preview</small><button aria-label="Remove hotel logo" onClick={() => setNotice("Hotel logo removal requires confirmation in the source PMS.")}><Trash2 size={14} /></button></div></div><div className="hotel-general-fields"><HotelProfileField label="Property Name" required><Input onChange={(event) => updateProfile("propertyName", event.target.value)} value={profile.propertyName} /></HotelProfileField><HotelProfileField label="Property Type" required><Select onChange={(value) => updateProfile("propertyType", value)} options={[{ value: "Hotels", label: "Hotels" }]} value={profile.propertyType} /></HotelProfileField><HotelProfileField label="Star Rating or Grade"><Select onChange={(value) => updateProfile("stars", value)} options={[{ value: "3 stars", label: "3 stars" }]} value={profile.stars} /></HotelProfileField><HotelProfileField label="Official Email Address" required><Input onChange={(event) => updateProfile("email", event.target.value)} value={profile.email} /></HotelProfileField><HotelProfileField label="Primary Contact Number" required><Input onChange={(event) => updateProfile("primaryContact", event.target.value)} value={profile.primaryContact} /></HotelProfileField><HotelProfileField label="Reservation Contact Number"><Input onChange={(event) => updateProfile("reservationContact", event.target.value)} value={profile.reservationContact} /></HotelProfileField><HotelProfileField label="Property Website"><Input onChange={(event) => updateProfile("website", event.target.value)} value={profile.website} /></HotelProfileField><HotelProfileField label="Fax Number (Optional)"><Input onChange={(event) => updateProfile("fax", event.target.value)} placeholder="Enter Fax Number" value={profile.fax} /></HotelProfileField><HotelProfileField label="Primary Registration Number"><Input onChange={(event) => updateProfile("registration", event.target.value)} value={profile.registration} /></HotelProfileField><HotelProfileField label="Additional Reg. Number 1"><Input placeholder="Enter Additional Reg. Number" /></HotelProfileField><HotelProfileField label="Additional Reg. Number 2"><Input placeholder="Enter Additional Reg. Number" /></HotelProfileField><HotelProfileField label="Additional Reg. Number 3"><Input placeholder="Enter Additional Reg. Number" /></HotelProfileField><HotelProfileField label="Additional Reg. Number 4"><Input placeholder="Enter Additional Reg. Number" /></HotelProfileField></div></div></section><section className="hotel-profile-section address"><h3>Address Information</h3><div className="hotel-address-grid"><HotelProfileField label="Street Address (Line 1)" required><Input onChange={(event) => updateProfile("address1", event.target.value)} value={profile.address1} /></HotelProfileField><HotelProfileField label="Street Address (Line 2)"><Input onChange={(event) => updateProfile("address2", event.target.value)} placeholder="Enter Street Address (Line 2)" value={profile.address2} /></HotelProfileField><HotelProfileField label="Country" required><Select onChange={(value) => updateProfile("country", value)} options={[{ value: "Saudi Arabia", label: "Saudi Arabia" }]} value={profile.country} /></HotelProfileField><HotelProfileField label="State / Province / Region"><Select onChange={(value) => updateProfile("region", value)} options={[{ value: "", label: "Select State / Province / Region" }, { value: "Makkah", label: "Makkah" }]} value={profile.region} /></HotelProfileField><HotelProfileField label="City / Town"><Select onChange={(value) => updateProfile("city", value)} options={[{ value: "Jeddah", label: "Jeddah" }]} value={profile.city} /></HotelProfileField><HotelProfileField label="Postal / Zip Code"><Input onChange={(event) => updateProfile("postal", event.target.value)} value={profile.postal} /></HotelProfileField></div><div className="hotel-map-disabled"><MapPin size={22} /><div><b>2109 Hera st., Jeddah</b><span>Map preview is disabled in this fixture-only prototype. No external map connection is opened.</span></div></div></section></div>;
+
+  const highlightHelp = {
+    "Local Attractions & Points of Interest": "List places of interest, amenities, and attractions near your property that guests might enjoy.",
+    "Directions & Transportation": "Describe arrival routes and transportation options using property-approved details.",
+    "Onsite & Nearby Activities": "Add activities that are available at or near the property.",
+    "About the Property": "Describe what makes SwissBlue Hotel Jeddah distinctive.",
+    "Famous Nearby Landmarks": "Add property-approved landmarks for guest orientation."
+  }[highlightTab];
+  const highlightsPanel = <div className="hotel-editor-panel"><p className="hotel-profile-intro">Our Highlights section gives you a quick overview of what makes the property stand out. Add only property-approved local attractions, transportation options, activities, and features.</p><div className="hotel-subtabs">{hotelHighlightTabs.map((label) => <button className={highlightTab === label ? "active" : ""} key={label} onClick={() => setHighlightTab(label)}>{label}</button>)}</div><p>{highlightHelp}</p><div className="hotel-rich-editor"><HotelRichToolbar onAction={markEditorAction} /><Input.TextArea aria-label={`${highlightTab} content`} onChange={(event) => { setHighlightText(event.target.value); setDirty(true); }} rows={11} value={highlightText} /></div></div>;
+
+  const filteredAmenities = amenities.filter((amenity) => amenity.name.toLowerCase().includes(amenityQuery.toLowerCase()));
+  const amenitiesPanel = <div className="hotel-amenities-panel"><p>Add or manage facilities available for guests at your property.</p><div className="hotel-amenity-toolbar"><Input allowClear onChange={(event) => setAmenityQuery(event.target.value)} placeholder="Search Amenities" prefix={<Search size={15} />} value={amenityQuery} /><Button aria-label="Add amenity" className="primary-command" icon={<Plus size={16} />} onClick={() => setAmenityModalOpen(true)} /></div><div className="hotel-amenity-table"><div className="hotel-amenity-head"><span /><b>Amenity Name <Info size={12} /></b><b>Action <Info size={12} /></b></div>{filteredAmenities.map((amenity) => { const Icon = amenity.icon; return <div className="hotel-amenity-row" key={amenity.key}><Switch checked={amenity.enabled} checkedChildren="On" unCheckedChildren="Off" onChange={(checked) => { setAmenities((current) => current.map((item) => item.key === amenity.key ? { ...item, enabled: checked } : item)); setDirty(true); }} size="small" /><span><Icon size={16} />{amenity.name}</span><Button aria-label={`Review ${amenity.name}`} onClick={() => setNotice(`${amenity.name} selected for review.`)} size="small">Review</Button></div>; })}</div></div>;
+
+  const galleryPanel = <div className="hotel-gallery-panel"><div className="hotel-gallery-heading"><h3>Property Images</h3><p>Review image slots for the property&apos;s exterior, lobby, amenities, and guest rooms.</p><span><b>Limit:</b> 20 images total, each under 2MB</span></div><div className="hotel-gallery-grid"><button className="hotel-gallery-upload" onClick={() => setGalleryModalOpen(true)}><UploadCloud size={32} /><span>Upload Image</span></button>{hotelGalleryItems.map((item, index) => <button className="hotel-gallery-reference" key={item} onClick={() => setSelectedGalleryItem(item)}><ImageIcon size={24} /><b>{item}</b><span>Source image {String(index + 1).padStart(2, "0")}</span><MoreVertical size={15} /></button>)}</div><small className="hotel-gallery-count">3 images left</small><div className="hotel-gallery-note"><Info size={14} />The source screenshots confirm 17 property images, but the original image files are not embedded in this repository. These slots stay visual-only to avoid inventing hotel media.</div></div>;
+
+  const policiesPanel = <div className="hotel-policy-panel"><p className="hotel-profile-intro">Use the options below to define terms and conditions for accepted reservations. Guests must accept the configured terms before completing a reservation.</p><div className="hotel-subtabs policy">{hotelPolicyTabs.map((label) => <button className={policyTab === label ? "active" : ""} key={label} onClick={() => setPolicyTab(label)}>{label}</button>)}</div><label className="hotel-policy-label">Policy <Info size={12} /></label><div className="hotel-rich-editor policy"><HotelRichToolbar onAction={markEditorAction} /><Input.TextArea aria-label={`${policyTab} content`} onChange={(event) => { setPolicyText(event.target.value); setDirty(true); }} rows={10} value={policyText} /><span className="hotel-character-count">{policyText.length} / 10000</span></div><section className="hotel-time-settings"><h3>Check-in and Check-out Time Settings</h3><div className="hotel-switch-label"><Switch checked={twentyFourHourCheckout} onChange={(checked) => { setTwentyFourHourCheckout(checked); setDirty(true); }} size="small" /><span>24 Hours Check-out <Info size={12} /></span></div><div className="hotel-time-grid"><HotelProfileField label="Check-in Time"><Input defaultValue="15:00" /></HotelProfileField><HotelProfileField label="Check-out Time"><Input defaultValue="12:00" /></HotelProfileField></div></section><section className="hotel-time-settings"><h3>Early Check-in Settings</h3><div className="hotel-switch-label"><Switch checked={earlyCheckIn} onChange={(checked) => { setEarlyCheckIn(checked); setDirty(true); }} size="small" /><span>Allow Early Check-in</span></div></section></div>;
+
+  const content = tab === "Profile" ? profilePanel : tab === "Highlights" ? highlightsPanel : tab === "Amenities" ? amenitiesPanel : tab === "Photo Gallery" ? galleryPanel : policiesPanel;
+  return <><div className="hotel-profile-workspace"><Tabs activeKey={tab} className="hotel-profile-tabs" items={hotelProfileTabs.map((label) => ({ key: label, label }))} onChange={onTab} size="small" /><div className="hotel-profile-content">{content}</div>{footer}</div><Drawer onClose={() => setAuditOpen(false)} open={auditOpen} placement="right" size={430} title="Hotel Profile Audit Trail"><div className="activity-timeline"><div><i className="green" /><span><b>Property profile reviewed</b><small>Prototype workspace · Current session</small></span></div><div><i className="blue" /><span><b>Policies source matched</b><small>SwissBlue Hotel Jeddah reference</small></span></div><div><i className="yellow" /><span><b>Gallery assets held at source</b><small>Original media files not embedded</small></span></div></div></Drawer><Modal footer={null} onCancel={() => setAmenityModalOpen(false)} open={amenityModalOpen} title="Add Amenity" width={440}><div className="drawer-form"><label>Amenity Name<Input autoFocus onChange={(event) => setNewAmenity(event.target.value)} placeholder="Required amenity name" value={newAmenity} /></label><div className="drawer-form-actions"><Button onClick={() => setAmenityModalOpen(false)}>Cancel</Button><Button className="primary-command" disabled={!newAmenity.trim()} onClick={addAmenity}>Add Amenity</Button></div></div></Modal><Modal footer={<Button onClick={() => { setGalleryModalOpen(false); setSelectedGalleryItem(null); }}>Close</Button>} onCancel={() => { setGalleryModalOpen(false); setSelectedGalleryItem(null); }} open={galleryModalOpen || Boolean(selectedGalleryItem)} title={selectedGalleryItem ? selectedGalleryItem : "Upload Property Image"} width={500}><div className="hotel-gallery-modal"><UploadCloud size={30} /><b>{selectedGalleryItem ? "Source-managed image slot" : "Visual upload workflow"}</b><p>{selectedGalleryItem ? "The source screenshot confirms this image slot. The original property image remains managed in the PMS reference." : "Image upload is represented visually only. No file is sent to an external service from this prototype."}</p></div></Modal></>;
+}
+
+const sourceRatePlans = [
+  { key: "djs-twin-standard", name: "Deluxe Junior Suite 2 Single Bed - Standard", roomType: "Deluxe Junior Suite 2 Single Bed", baseRate: 450, netBaseRate: 381.76, type: "Master", status: true },
+  { key: "djs-twin-nonref", name: "Deluxe Junior Suite 2 Single Bed - Non-Refundable", roomType: "Deluxe Junior Suite 2 Single Bed", baseRate: 405, type: "Derived", status: true, masterKey: "djs-twin-standard" },
+  { key: "djs-king-standard", name: "Deluxe Junior Suite King Bed - Standard", roomType: "Deluxe Junior Suite King Bed", baseRate: 525, type: "Master", status: true },
+  { key: "djs-king-nonref", name: "Deluxe Junior Suite King Bed - Non-Refundable", roomType: "Deluxe Junior Suite King Bed", baseRate: 472.5, type: "Derived", status: true, masterKey: "djs-king-standard" },
+  { key: "deluxe-king-standard", name: "Deluxe King Room - Standard", roomType: "Deluxe King Room", baseRate: 350, type: "Master", status: true },
+  { key: "deluxe-king-nonref", name: "Deluxe King Room - Non-Refundable", roomType: "Deluxe King Room", baseRate: 315, type: "Derived", status: true, masterKey: "deluxe-king-standard" },
+  { key: "executive-standard", name: "Executive Suite - Standard", roomType: "Executive Suite", baseRate: 950, type: "Master", status: true },
+  { key: "executive-nonref", name: "Executive Suite - Non-Refundable", roomType: "Executive Suite", baseRate: 855, type: "Derived", status: true, masterKey: "executive-standard" },
+  { key: "junior-standard", name: "Junior Suite - Standard", roomType: "Junior Suite", baseRate: 350, type: "Master", status: true },
+  { key: "junior-nonref", name: "Junior Suite - Non-Refundable", roomType: "Junior Suite", baseRate: 315, type: "Derived", status: true, masterKey: "junior-standard" }
+];
+
+const ratePlanSteps = ["General Info", "Pricing Strategy", "Policies", "Inclusions", "Source Mapping"];
+
+function RatePlanTypeBadge({ type }) {
+  return <span className={`rate-plan-type-badge ${type.toLowerCase()}`}>{type}</span>;
+}
+
+function RatePlanWorkspace() {
+  const [plans, setPlans] = useState(sourceRatePlans);
+  const [query, setQuery] = useState("");
+  const [editorPlan, setEditorPlan] = useState(null);
+  const [editorStep, setEditorStep] = useState(0);
+  const [draft, setDraft] = useState(null);
+  const [notice, setNotice] = useState("Rate plans reflect the supplied SwissBlue Hotel Jeddah configuration reference.");
+  const [inclusiveTax, setInclusiveTax] = useState(false);
+  const [maxOccupancy, setMaxOccupancy] = useState(false);
+  const [editorDirty, setEditorDirty] = useState(false);
+  const filteredPlans = plans.filter((plan) => plan.name.toLowerCase().includes(query.toLowerCase()));
+
+  const beginEditor = (plan) => {
+    const source = plan || sourceRatePlans[0];
+    setEditorPlan(source);
+    setDraft({ ...source, name: plan ? source.name : `${source.roomType} - New Rate Plan`, description: plan ? source.name : "", sortKey: "0", extraAdultRate: 0, extraChildRate: 0 });
+    setEditorStep(0);
+    setEditorDirty(!plan);
+    setNotice(`${plan ? "Editing" : "Creating"} ${source.roomType} rate plan.`);
+  };
+  const closeEditor = () => { setEditorPlan(null); setDraft(null); setEditorStep(0); setNotice("Returned to the Rate Plan list."); };
+  const updateDraft = (field, value) => { setDraft((current) => ({ ...current, [field]: value })); setEditorDirty(true); };
+  const updatePlan = () => {
+    if (!editorPlan || !draft) return;
+    setPlans((current) => current.map((plan) => plan.key === editorPlan.key ? { ...plan, name: draft.name, baseRate: Number(draft.baseRate) || plan.baseRate } : plan));
+    closeEditor();
+  };
+  const toggleStatus = (key, checked) => {
+    setPlans((current) => current.map((plan) => plan.key === key ? { ...plan, status: checked } : plan));
+    setNotice(`Rate plan ${checked ? "enabled" : "disabled"} in the visual prototype.`);
+  };
+
+  if (!editorPlan || !draft) return <div className="rate-plan-workspace"><header className="rate-plan-heading"><div><h2>Rate Plan</h2><p>Manage pricing hierarchies, derived plans, and standalone rate configurations.</p></div><Button aria-label="Add rate plan" className="rate-plan-add" icon={<Plus size={16} />} onClick={() => beginEditor(null)} /></header><div className="rate-plan-search"><Input allowClear onChange={(event) => setQuery(event.target.value)} placeholder="Search Rate Plan" prefix={<Search size={15} />} value={query} /></div><div className="rate-plan-legend"><span><RatePlanTypeBadge type="Master" />This is your main/base rate. Any changes here will update all derived plans.</span><span><RatePlanTypeBadge type="Derived" />This rate is linked to a master plan. It adjusts based on the master rate.</span><span><RatePlanTypeBadge type="Independent" />This rate works on its own. Changes here do not affect any other plans.</span></div><div className="rate-plan-list"><div className="rate-plan-list-head"><b>Rate Plan</b><b>Base Rate <Info size={12} /></b><b>Type</b><b>Status</b><b>Action</b></div>{filteredPlans.map((plan) => <div className={`rate-plan-list-row ${plan.type.toLowerCase()}`} key={plan.key}><span>{plan.type === "Derived" ? <Link2 size={14} /> : <i />}{plan.name}</span><span><b>{plan.baseRate.toFixed(2)}</b>{plan.type === "Derived" && <small>↑ ×0.9 of BAR</small>}</span><RatePlanTypeBadge type={plan.type} /><Switch checked={plan.status} checkedChildren="On" unCheckedChildren="Off" onChange={(checked) => toggleStatus(plan.key, checked)} size="small" /><span className="rate-plan-row-actions"><Button aria-label={`Edit ${plan.name}`} icon={<Pencil size={14} />} onClick={() => beginEditor(plan)} size="small" /><Button aria-label={`Delete ${plan.name}`} icon={<Trash2 size={14} />} onClick={() => setNotice(`${plan.name} deletion is held for source approval.`)} size="small" /><Button aria-label={`Review ${plan.name}`} icon={<Info size={14} />} onClick={() => setNotice(`${plan.name}: ${plan.roomType}, ${plan.type}, SAR ${plan.baseRate.toFixed(2)}.`)} size="small" /></span></div>)}{filteredPlans.length === 0 && <div className="rate-plan-empty">No rate plans match this search.</div>}</div><div className="surface-status rate-plan-status"><ShieldCheck size={14} />{notice}</div></div>;
+
+  const policySummary = <><b>Free Cancellation till 48 hours before check-in</b><ul><li>More than 2 days before check-in: Free Cancellation. No charges will be applied.</li><li>0 to 2 days before check-in: Non-refundable. Full stay charge will be applied.</li></ul></>;
+  const generalInfo = <div className="rate-plan-editor-section"><h3>General Information</h3><p>Define the core identity of this rate plan.</p><div className="rate-plan-form-grid"><HotelProfileField label="Room Type" required><Select disabled options={[{ value: draft.roomType, label: draft.roomType }]} value={draft.roomType} /></HotelProfileField><HotelProfileField label="Rate Type" required><Select disabled options={[{ value: "Walk INN Room Only", label: "Walk INN Room Only" }]} value="Walk INN Room Only" /></HotelProfileField><HotelProfileField label="Rate Plan Name" required><Input onChange={(event) => updateDraft("name", event.target.value)} value={draft.name} /></HotelProfileField><HotelProfileField label="Sort Key"><Input onChange={(event) => updateDraft("sortKey", event.target.value)} value={draft.sortKey} /></HotelProfileField><label className="rate-plan-description">Rate Plan Description <b>*</b><Input.TextArea onChange={(event) => updateDraft("description", event.target.value)} rows={4} value={draft.description} /></label></div><div className="rate-plan-editor-toggle"><span>Configure max occupancy</span><Switch checked={maxOccupancy} checkedChildren="On" unCheckedChildren="Off" onChange={setMaxOccupancy} size="small" /></div></div>;
+  const pricingStrategy = <div className="rate-plan-editor-section"><h3>Pricing Strategy</h3><p>Configure base rates, meal inclusions, guest charges, and pricing adjustments for this rate plan.</p><label className="rate-plan-block-label">Rate Plan Type</label><div className="rate-plan-type-cards">{["Master", "Derived", "Independent"].map((type) => <button className={draft.type === type ? "active" : ""} disabled={type !== draft.type} key={type}><Radio checked={draft.type === type} disabled={type !== draft.type} /><span><b>{type}</b><small>{type === "Master" ? "Sets base pricing used by derived plans." : type === "Derived" ? "Inherits pricing from master with offset." : "Standalone pricing without inheritance."}</small></span></button>)}</div><div className="rate-plan-adjustments"><span>Rate adjustments <Info size={12} /></span><Checkbox checked={inclusiveTax} onChange={(event) => { setInclusiveTax(event.target.checked); setEditorDirty(true); }}>Rates Inclusive Tax</Checkbox></div><div className="rate-plan-pricing-table"><div><b>Rate Plan</b><b>Base Rate</b><b>Extra Adult Rate</b><b>Extra Child Rate</b></div><div><span>{draft.name}</span><Input aria-label="Base Rate" onChange={(event) => updateDraft("netBaseRate", event.target.value)} value={draft.netBaseRate || draft.baseRate} /><Input aria-label="Extra Adult Rate" onChange={(event) => updateDraft("extraAdultRate", event.target.value)} value={draft.extraAdultRate} /><Input aria-label="Extra Child Rate" onChange={(event) => updateDraft("extraChildRate", event.target.value)} value={draft.extraChildRate} /></div></div></div>;
+  const policies = <div className="rate-plan-editor-section"><h3>Cancellation & Stay Policy</h3><p>Define the cancellation terms, advance purchase requirement, and restrictions for this rate plan.</p><HotelProfileField label="Cancellation Policy" required><Select options={[{ value: "Free Cancellation till 48 hours before check-in", label: "Free Cancellation till 48 hours before check-in" }]} value="Free Cancellation till 48 hours before check-in" /></HotelProfileField><div className="rate-plan-policy-callout"><h4>Selected Policy Summary</h4>{policySummary}</div></div>;
+  const inclusions = <div className="rate-plan-editor-section"><h3>Inclusions & Fees</h3><p>Select which services are bundled into this rate plan. Set offer type per inclusion; for discounted offers, choose flat amount or percentage and enter the value.</p><HotelProfileField label="Inclusions"><Select placeholder="-Select-" /></HotelProfileField><div className="rate-plan-inclusions-table"><div><b>Inclusions</b><b>Price</b><b>Offer type</b><b>Discount type</b></div><div className="rate-plan-no-data"><ClipboardList size={30} /><span>No data</span></div></div></div>;
+  const sourceMapping = <div className="rate-plan-editor-section"><h3>Source & Channel Mapping</h3><p>Review the booking channels and distribution sources shown in the supplied reference. This prototype does not open or update external connections.</p><HotelProfileField label="Web"><Select mode="multiple" options={[{ value: "www.test.swissblue.sa - WEB", label: "www.test.swissblue.sa - WEB" }]} value={["www.test.swissblue.sa - WEB"]} /></HotelProfileField><HotelProfileField label="Travel agent"><Select maxTagCount={1} mode="multiple" options={[{ value: "Agoda-28112909 - TRAVELAGENT", label: "Agoda-28112909 - TRAVELAGENT" }, { value: "17 additional source mappings", label: "17 additional source mappings" }]} value={["Agoda-28112909 - TRAVELAGENT", "17 additional source mappings"]} /></HotelProfileField><div className="rate-plan-source-note"><ShieldCheck size={15} /><span><b>Reference-only mapping</b>No live channel, endpoint, marketplace, integration, payment, or external connection is enabled.</span></div></div>;
+  const editorContent = [generalInfo, pricingStrategy, policies, inclusions, sourceMapping][editorStep];
+
+  return <div className="rate-plan-editor"><header className="rate-plan-editor-header"><button aria-label="Back to rate plan list" onClick={closeEditor}><ChevronLeft size={17} /></button><h2>Edit Rate Plan</h2></header><div className="rate-plan-stepper">{ratePlanSteps.map((label, index) => <button className={index === editorStep ? "active" : index < editorStep ? "complete" : ""} key={label} onClick={() => setEditorStep(index)}><i>{index < editorStep ? <CheckCircle2 size={15} /> : index + 1}</i><span>{label}</span></button>)}</div><div className="rate-plan-editor-body"><main>{editorContent}</main><aside className="rate-plan-summary"><h3>Summary</h3><section><span>BASIC INFO</span><div><small>Rate Plan Name</small><b>{draft.name}</b>{editorStep > 0 && <><small>Rate Plan Type</small><RatePlanTypeBadge type={draft.type} /></>}</div></section>{editorStep >= 2 && <section><span>POLICY</span><div className="rate-plan-policy-summary">{policySummary}</div></section>}</aside></div><footer className="rate-plan-editor-footer"><span>{notice}</span>{editorStep > 0 && <Button onClick={() => setEditorStep((current) => current - 1)}>Back</Button>}{editorStep < ratePlanSteps.length - 1 ? <Button className="primary-command" onClick={() => setEditorStep((current) => current + 1)}>Next</Button> : <Button className={editorDirty ? "primary-command" : ""} disabled={!editorDirty} onClick={updatePlan}>Update</Button>}<Button onClick={closeEditor}>Cancel</Button></footer></div>;
+}
+
 export function ConfigurationView({ onAdd }) {
   const [group, setGroup] = useState("Property Setup");
-  const [section, setSection] = useState("Rooms & Rates");
-  const [tab, setTab] = useState("Room Type");
+  const [section, setSection] = useState("Hotel Profile");
+  const [tab, setTab] = useState("Profile");
   const [enabled, setEnabled] = useState({});
   const [notice, setNotice] = useState("Configuration changes apply to the selected property.");
   const current = configurationSections[section];
@@ -522,6 +703,7 @@ export function ConfigurationView({ onAdd }) {
   const isRatePlanTable = section === "Rooms & Rates" && tab === "Rate Plan";
   const isRateTypeTable = section === "Rooms & Rates" && tab === "Rate Type";
   const isBookingEngine = section === "Booking Engine";
+  const isHotelProfile = section === "Hotel Profile";
   const pageTitle = section === "Rooms & Rates" ? tab : section;
   const addLabel = isRatePlanTable ? "Rate Plan" : isRateTypeTable ? "Rate Type" : current.add;
   const rows = isRatePlanTable ? ratePlanConfigRows : isRateTypeTable ? rateTypeConfigRows : current.rows;
@@ -544,7 +726,7 @@ export function ConfigurationView({ onAdd }) {
       </button>
       {group === label && hasSubsections && <div className="configuration-subnav">{sections.map((item) => <button className={section === item ? "selected" : ""} key={item} onClick={() => selectSection(item)}>{item}</button>)}</div>}
     </div>;
-  })}</aside><div className="configuration-canvas">{isBookingEngine ? <BookingEngineWorkspace /> : <><div className="config-heading"><div><div className="configuration-context"><InlineStatus tone="muted">{group}</InlineStatus></div><h2>{pageTitle}</h2><p>{current.description}</p></div><Button icon={<Plus size={14} />} onClick={() => onAdd({ title: `Add ${addLabel}`, action: `Save ${addLabel}` })} size="small">Add {addLabel}</Button></div><Tabs activeKey={tab} onChange={setTab} className="config-tabs" items={current.tabs.map((label) => ({ key: label, label }))} size="small" /><div className="configuration-context"><Input className="config-search" prefix={<Search size={15} />} placeholder={isRoomTypeTable ? "Search Room Type" : isRatePlanTable ? "Search Rate Plan" : isRateTypeTable ? "Search Rate Type" : `Search ${section}`} /><InlineStatus tone="muted">{tab}</InlineStatus></div><WorkspaceTable columns={columns} rows={rows.map((row) => ({ ...row, key: `${section}-${tab}-${row.key}` }))} /><div className="surface-status"><ShieldCheck size={14} />{notice}</div></>}</div></section>;
+  })}</aside><div className={`configuration-canvas ${isHotelProfile ? "hotel-profile-canvas" : isRatePlanTable ? "rate-plan-canvas" : ""}`}>{isBookingEngine ? <BookingEngineWorkspace /> : isHotelProfile ? <HotelProfileWorkspace onTab={setTab} tab={tab} /> : isRatePlanTable ? <RatePlanWorkspace /> : <><div className="config-heading"><div><div className="configuration-context"><InlineStatus tone="muted">{group}</InlineStatus></div><h2>{pageTitle}</h2><p>{current.description}</p></div><Button icon={<Plus size={14} />} onClick={() => onAdd({ title: `Add ${addLabel}`, action: `Save ${addLabel}` })} size="small">Add {addLabel}</Button></div><Tabs activeKey={tab} onChange={setTab} className="config-tabs" items={current.tabs.map((label) => ({ key: label, label }))} size="small" /><div className="configuration-context"><Input className="config-search" prefix={<Search size={15} />} placeholder={isRoomTypeTable ? "Search Room Type" : isRateTypeTable ? "Search Rate Type" : `Search ${section}`} /><InlineStatus tone="muted">{tab}</InlineStatus></div><WorkspaceTable columns={columns} rows={rows.map((row) => ({ ...row, key: `${section}-${tab}-${row.key}` }))} /><div className="surface-status"><ShieldCheck size={14} />{notice}</div></>}</div></section>;
 }
 
 export function MiniMetric({ label, value, detail, tone }) {
