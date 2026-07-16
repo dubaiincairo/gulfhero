@@ -96,6 +96,8 @@ context, and configurable modules, but all prototype data stays local fixtures.
 
 ## Run Log
 
+- 2026-07-16: Normalized reservation guest presentation globally: avatar initials now use exactly the first two name initials, reservation fixtures exclude dual-name “+” guest records, and displayed guest names no longer include OTA/business-source suffixes because source remains in reservation data. Build validation passes.
+
 - 2026-07-12: Reservation detail workflow, Rooms and Rates configuration, and
   Stay View were implemented and browser-verified locally.
 - 2026-07-13: Completed the local-only Booking Engine desktop prototype and
